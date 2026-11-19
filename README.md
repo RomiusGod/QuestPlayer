@@ -34,9 +34,9 @@ The engine: Glulx is implemented — .gblorb, .blorb, .ulx files. The engine liv
 
 As I was building it, I realized translation could be wired in too — very handy, even if the quality isn't perfect. If someone can show a better implementation, you're welcome to.
 
-Описания переводятся на выбранный язык (по умолчанию русский). Кнопка RU выключает перевод целиком. Тап по абзацу показывает оригинал этого абзаца. Нужен интернет; без сети игра идёт, просто без перевода. Введённые тобой команды не переводятся — они уходят в игру как есть.
+Описания переводятся на выбранный язык (по умолчанию — язык интерфейса; в настройках 19 языков). Кнопка перевода показывает целевой язык — RU, EN или другой — а когда перевод выключен, на ней написано OFF. Тап по абзацу показывает оригинал этого абзаца. Нужен интернет; без сети игра идёт, просто без перевода. Введённые тобой команды не переводятся — они уходят в игру как есть.
 
-Descriptions get translated into your chosen language (Russian by default). The RU button turns translation off entirely. Tap a paragraph to see its original. Needs internet; offline the game still runs, just untranslated. Your input commands are never translated — they go to the game as-is.
+Descriptions get translated into the language you choose (the UI language by default; 19 languages in settings). The translate button shows the target language — RU, EN or another — and reads OFF when translation is disabled. Tap a paragraph to see its original. Needs internet; offline the game still runs, just untranslated. Your input commands are never translated — they go to the game as-is.
 
 ## Управление / Controls
 
