@@ -12,19 +12,19 @@ An interactive fiction player for Android. By Romius.
 
 I built this when I wanted to play a big Glulx game on my phone and no player would open it — either it ran out of memory or the file just wouldn't fit. So QuestPlayer doesn't flinch at heavy files: while typical mobile alternatives are built for games of a few megabytes and give up on anything heavier, this one handles up to a gigabyte — large Glulx games with resources, sound and graphics open and run. Under the hood are the Glulx virtual machine, designed by Andrew Plotkin (Zarf), and Quixe, his JavaScript interpreter for it; jQuery is in the build as a historical dependency of Quixe/GlkOte, not a whim. The rest is nice detail.
 
-## Почему он вообще нужен
+## Почему он вообще нужен / Why it's needed
 
 На телефоне интерактивные книги обычно упираются в память и в браузерные лимиты: localStorage кончается на ~5 МБ, вкладка падает, сейв не влезает. Здесь хранилище построено иначе — крупные данные уходят в IndexedDB, которая переживает перезагрузку и не задыхается на десятках мегабайт. Сейв большой Glulx-игры не проблема, даже если он весит около 20 МБ.
 
 On a phone, interactive fiction usually hits memory and browser limits: localStorage caps at ~5 MB, the tab crashes, the save won't fit. Storage here is built differently — large data goes to IndexedDB, which survives reloads and doesn't choke on tens of megabytes. A save for a big Glulx game is no problem, even when it is around 20 MB.
 
-## Что уже работает
+## Что уже работает / What works
 
 Движок: реализован Glulx — файлы .gblorb, .blorb, .ulx. Движок вынесен в отдельный файл: монолита на HTML больше нет, так что добавлять новые движки будет проще. Загрузка простая: стартовый экран → «Выбрать файл игры» → игра пошла.
 
 The engine: Glulx is implemented — .gblorb, .blorb, .ulx files. The engine lives in its own file: no more HTML monolith, so adding new engines will be easier. Loading is simple: start screen → "Choose game file" → you're in.
 
-## Перевод
+## Перевод / Translation
 
 По мере сборки я понял, что можно прикрутить и перевод — очень удобно, хоть качество и не идеально. Если кто-то сможет показать лучшую реализацию — милости прошу.
 
@@ -34,30 +34,31 @@ As I was building it, I realized translation could be wired in too — very hand
 
 Descriptions get translated into your chosen language (Russian by default). The RU button turns translation off entirely. Tap a paragraph to see its original. Needs internet; offline the game still runs, just untranslated. Your input commands are never translated — they go to the game as-is.
 
-## Управление
+## Управление / Controls
 
 Стрелки и Enter — для меню и перелистывания. Кнопка ⌨ открывает строку ввода; в APK это обычное поле плюс системная клавиатура, и окно игры не прыгает — строку просто поднимаем над клавиатурой. ⛶ — полный экран. Быстрые кнопки — свои команды, которые уходят в игру как есть; их можно добавлять, красить и перетаскивать, позиции запоминаются.
 
 Arrows and Enter handle menus and paging. The ⌨ button opens the command line; in the APK it's a normal field plus the system keyboard, and the game window doesn't jump — we just lift the bar above the keyboard. ⛶ toggles fullscreen. Quick buttons are your own commands sent verbatim; add, colour and drag them, positions are remembered.
-Настройки (⋮)
+
+### Настройки (⋮) / Settings (⋮)
 
 Размер кнопок (крупные/компактные), переключатели стрелок, звука и графики, ориентация (авто / книжная / альбомная), язык интерфейса (русский/английский), светлая и тёмная тема. Сохранения: сейв при выходе автоматически скачивается в «Загрузки», Restore в игре сразу открывает выбор файла с телефона, есть экспорт всех и импорт одного. Плюс импорт/выгрузка данных игр и лог для диагностики.
 
 Button size (large/compact), toggles for arrows, sound and graphics, orientation (auto / portrait / landscape), UI language (Russian/English), light and dark theme. Saves: the save on exit is auto-downloaded to Downloads, Restore in-game opens the phone's file picker right away, plus export-all and import-one. Also import/export of game data and a diagnostic log.
 
-## Другие движки
+## Другие движки / Other engines
 
 Сейчас поддержан Glulx. Движки для других форматов — в планах; по мере готовности они появятся в плеере.
 
 Glulx is supported today. Engines for other formats are planned and will arrive as they're ready.
 
-## Приватность
+## Приватность / Privacy
 
 Файлы не покидают телефон. Наружу уходит только текст на перевод — и только если перевод включён. Сохранения локальные. Никакой аналитики, никаких аккаунтов.
 
 Files never leave your phone. Only text for translation goes out — and only when translation is on. Saves are local. No analytics, no accounts.
 
-## Кто делает
+## Кто делает / Who made it
 
 Собрал Romius. Сломалось — включи лог, экспортируй, пришли. Работает — просто читай.
 
@@ -592,6 +593,12 @@ Package change. Old internal data isn't migrated — do "Export all" beforehand.
 `⋮` → "Diagnostics" → "Start log", repeat the action, "Export log" — the file lands in Downloads. The log shows the build tag, JS errors and keyboard events.
 
 ---
+
+## Благодарность / Acknowledgements
+
+Если плеер пригодился — [поблагодарить автора](https://app.lava.top/products/6aa79a8c-6a6b-44b9-b6b0-727f7651e36e) можно здесь. Код открыт, так что допиливать и собирать под себя можно и без этого.
+
+If the player was useful, you can [thank the author](https://app.lava.top/products/6aa79a8c-6a6b-44b9-b6b0-727f7651e36e) here. The code is open, so you're welcome to tweak and build it for yourself instead.
 
 ## Лицензия и атрибуция / License and attribution
 
