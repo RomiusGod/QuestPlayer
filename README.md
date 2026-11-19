@@ -1,4 +1,8 @@
-QuestPlayer
+# QuestPlayer
+
+[![Latest release](https://img.shields.io/github/v/release/RomiusGod/QuestPlayer?label=release&color=2ea44f)](https://github.com/RomiusGod/QuestPlayer/releases/latest)
+[![License](https://img.shields.io/github/license/RomiusGod/QuestPlayer?label=license&color=blue)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Android-3ddc84)](https://github.com/RomiusGod/QuestPlayer)
 
 Плеер интерактивных книг для Android. Автор — Romius.
 
@@ -7,17 +11,20 @@ An interactive fiction player for Android. By Romius.
 Я собрал это, когда захотел поиграть в большую Glulx-игру на телефоне, а ни один плеер её не открыл — то памяти не хватало, то файл не влезал. Так что QuestPlayer не боится тяжёлых файлов: пока обычные мобильные аналоги рассчитаны на игры в несколько мегабайт и на файле потяжелее сдаются, этот тянет до гигабайта — большие Glulx-игры с ресурсами, звуком и графикой открываются и идут. Под капотом — виртуальная машина Glulx, спроектированная Эндрю Плоткиным (Zarf), и её JavaScript-интерпретатор Quixe от того же автора; jQuery в сборке — историческая зависимость Quixe/GlkOte, не прихоть. Остальное — приятные детали.
 
 I built this when I wanted to play a big Glulx game on my phone and no player would open it — either it ran out of memory or the file just wouldn't fit. So QuestPlayer doesn't flinch at heavy files: while typical mobile alternatives are built for games of a few megabytes and give up on anything heavier, this one handles up to a gigabyte — large Glulx games with resources, sound and graphics open and run. Under the hood are the Glulx virtual machine, designed by Andrew Plotkin (Zarf), and Quixe, his JavaScript interpreter for it; jQuery is in the build as a historical dependency of Quixe/GlkOte, not a whim. The rest is nice detail.
-Почему он вообще нужен
+
+## Почему он вообще нужен
 
 На телефоне интерактивные книги обычно упираются в память и в браузерные лимиты: localStorage кончается на ~5 МБ, вкладка падает, сейв не влезает. Здесь хранилище построено иначе — крупные данные уходят в IndexedDB, которая переживает перезагрузку и не задыхается на десятках мегабайт. Сейв большой Glulx-игры не проблема, даже если он весит около 20 МБ.
 
 On a phone, interactive fiction usually hits memory and browser limits: localStorage caps at ~5 MB, the tab crashes, the save won't fit. Storage here is built differently — large data goes to IndexedDB, which survives reloads and doesn't choke on tens of megabytes. A save for a big Glulx game is no problem, even when it is around 20 MB.
-Что уже работает
+
+## Что уже работает
 
 Движок: реализован Glulx — файлы .gblorb, .blorb, .ulx. Движок вынесен в отдельный файл: монолита на HTML больше нет, так что добавлять новые движки будет проще. Загрузка простая: стартовый экран → «Выбрать файл игры» → игра пошла.
 
 The engine: Glulx is implemented — .gblorb, .blorb, .ulx files. The engine lives in its own file: no more HTML monolith, so adding new engines will be easier. Loading is simple: start screen → "Choose game file" → you're in.
-Перевод
+
+## Перевод
 
 По мере сборки я понял, что можно прикрутить и перевод — очень удобно, хоть качество и не идеально. Если кто-то сможет показать лучшую реализацию — милости прошу.
 
@@ -26,7 +33,8 @@ As I was building it, I realized translation could be wired in too — very hand
 Описания переводятся на выбранный язык (по умолчанию русский). Кнопка RU выключает перевод целиком. Тап по абзацу показывает оригинал этого абзаца. Нужен интернет; без сети игра идёт, просто без перевода. Введённые тобой команды не переводятся — они уходят в игру как есть.
 
 Descriptions get translated into your chosen language (Russian by default). The RU button turns translation off entirely. Tap a paragraph to see its original. Needs internet; offline the game still runs, just untranslated. Your input commands are never translated — they go to the game as-is.
-Управление
+
+## Управление
 
 Стрелки и Enter — для меню и перелистывания. Кнопка ⌨ открывает строку ввода; в APK это обычное поле плюс системная клавиатура, и окно игры не прыгает — строку просто поднимаем над клавиатурой. ⛶ — полный экран. Быстрые кнопки — свои команды, которые уходят в игру как есть; их можно добавлять, красить и перетаскивать, позиции запоминаются.
 
@@ -36,26 +44,28 @@ Arrows and Enter handle menus and paging. The ⌨ button opens the command line;
 Размер кнопок (крупные/компактные), переключатели стрелок, звука и графики, ориентация (авто / книжная / альбомная), язык интерфейса (русский/английский), светлая и тёмная тема. Сохранения: сейв при выходе автоматически скачивается в «Загрузки», Restore в игре сразу открывает выбор файла с телефона, есть экспорт всех и импорт одного. Плюс импорт/выгрузка данных игр и лог для диагностики.
 
 Button size (large/compact), toggles for arrows, sound and graphics, orientation (auto / portrait / landscape), UI language (Russian/English), light and dark theme. Saves: the save on exit is auto-downloaded to Downloads, Restore in-game opens the phone's file picker right away, plus export-all and import-one. Also import/export of game data and a diagnostic log.
-Другие движки
+
+## Другие движки
 
 Сейчас поддержан Glulx. Движки для других форматов — в планах; по мере готовности они появятся в плеере.
 
 Glulx is supported today. Engines for other formats are planned and will arrive as they're ready.
-Приватность
+
+## Приватность
 
 Файлы не покидают телефон. Наружу уходит только текст на перевод — и только если перевод включён. Сохранения локальные. Никакой аналитики, никаких аккаунтов.
 
 Files never leave your phone. Only text for translation goes out — and only when translation is on. Saves are local. No analytics, no accounts.
-Кто делает
+
+## Кто делает
 
 Собрал Romius. Сломалось — включи лог, экспортируй, пришли. Работает — просто читай.
 
 Built by Romius. Broken — turn on the log, export it, send it. Works — just read.
 
+## Как начать / Getting started
 
-Как начать / Getting started
-
-Как начать
+### Как начать
 
 1. Положите рядом `QuestPlayer.html` и папку `engines` — без неё книга не запустится, движок подгружается отдельно.
 2. Откройте страницу через любой локальный сервер: `python -m http.server`, `npx serve` или «Live Server» в редакторе. Просто двойным щелчком по файлу (`file://`) браузер не даст странице загрузить движок.
@@ -63,7 +73,7 @@ Built by Romius. Broken — turn on the log, export it, send it. Works — just 
 
 Дальше всё как в игре: печатаете или нажимаете кнопки, книга отвечает.
 
-Getting started
+### Getting started
 
 1. Put `QuestPlayer.html` and the `engines` folder side by side — without it the book won't start, the engine is loaded separately.
 2. Open the page through any local server: `python -m http.server`, `npx serve`, or Live Server in your editor. Opening the file directly (`file://`) won't let the page load the engine.
@@ -73,7 +83,7 @@ From there it's just like playing: type or press the buttons, and the book answe
 
 ---
 
-Что на экране / On screen
+## Что на экране / On screen
 
 **Стартовый экран** — название, «by Romius», «for players by player», большая кнопка «Выбрать файл игры» и короткая памятка. Справа сверху — те же три точки `⋮`, что и в игре: отдельной кнопки «Настройки» больше нет, настройки всегда в одном месте.
 
@@ -89,7 +99,7 @@ From there it's just like playing: type or press the buttons, and the book answe
 
 ---
 
-Что где лежит / What's where
+## Что где лежит / What's where
 
 | Файл / File | Зачем / Why |
 | `QuestPlayer.html` | Вся страница: разметка, стили, интерфейс, перевод, сейвы, мост / The whole page: markup, styles, UI, translation, saves, bridge |
@@ -101,7 +111,7 @@ From there it's just like playing: type or press the buttons, and the book answe
 
 ---
 
-Как устроен QuestPlayer.html / How QuestPlayer.html is organized
+## Как устроен QuestPlayer.html / How QuestPlayer.html is organized
 
 Файл читается сверху вниз: две таблицы стилей и три `<script>`.
 
@@ -137,7 +147,7 @@ There's no interpreter code in the file — it lives in `engines/`. That's why t
 
 ---
 
-Расширенная сборка: три вставки / Extended build: three insertions
+## Расширенная сборка: три вставки / Extended build: three insertions
 
 Обычная версия — чистый код: ни одной проверки «а не расширенная ли это копия», ни флагов, ни условных ветвей. Логика одна и та же, просто меньше возможностей.
 
@@ -480,7 +490,7 @@ Next to the theme icon (moon/sun) a `▾` caret appears: it opens "Interface col
 
 ---
 
-Обмен данными между сборками / Sharing data between builds
+## Обмен данными между сборками / Sharing data between builds
 
 Обычная и расширенная сборки — разные приложения, и их внутренние каталоги друг друга не видят. Поэтому обмен идёт через один файл в папке, которую вы выбрали сами один раз и к которой приложение сохраняет доступ.
 
@@ -506,7 +516,7 @@ The rules are simple and predictable:
 
 ---
 
-Движки / Engines
+## Движки / Engines
 
 В `QuestPlayer.html` нет кода виртуальной машины. Формат определяется по расширению и сигнатуре файла, а движок подгружается из `engines/` только когда он действительно нужен. Сейчас поддержан Glulx (`engines/glulx.js`).
 
@@ -518,7 +528,7 @@ Adding an engine is two lines in the registry: a new file in `engines/` and an e
 
 ---
 
-Сборка APK / Building the APK
+## Сборка APK / Building the APK
 
 APK — это WebView, который открывает `assets/index.html` и отдаёт странице мост `AndroidBridge`. Минимум — Android 7.0 (API 24), пакет `com.romius.questplayer`, `versionName` — 1.0, `versionCode` растёт с каждой сборкой.
 
@@ -547,7 +557,7 @@ The APK is signed with a permanent key: without it, updating over an installed v
 
 ---
 
-Ограничения / Limitations
+## Ограничения / Limitations
 
 Память. Книга целиком загружается в память. На файле ~700 МБ работает, но тяжёлые сцены тормозят — это цена JS-интерпретации.
 
@@ -568,9 +578,10 @@ One book. One book open at a time; choosing another file reloads the page.
 Смена пакета. Старые внутренние данные не переносятся — сделайте «Экспорт всех» заранее.
 
 Package change. Old internal data isn't migrated — do "Export all" beforehand.
+
 ---
 
-Что посмотреть, если что-то пошло не так / What to check if something went wrong
+## Что посмотреть, если что-то пошло не так / What to check if something went wrong
 
 `⋮` → «Диагностика» → «Начать лог», повторите действие, «Экспорт лога» — файл ляжет в «Загрузки». В логе видно метку сборки, ошибки JS и события клавиатуры.
 
@@ -578,7 +589,7 @@ Package change. Old internal data isn't migrated — do "Export all" beforehand.
 
 ---
 
-Лицензия и атрибуция / License and attribution
+## Лицензия и атрибуция / License and attribution
 
 Код QuestPlayer — MIT, © 2026 Romius (см. `LICENSE`). Движок © Andrew Plotkin (Quixe, GlkOte), jQuery © jQuery Foundation, MIT. Идея, архитектура, интерфейс, сохранения, перевод и Android-мост — Romius; реализация — в соавторстве с AI по ТЗ автора.
 
@@ -586,7 +597,7 @@ QuestPlayer code is MIT, © 2026 Romius (see `LICENSE`). Engine © Andrew Plotki
 
 ---
 
-Форки, PR и имя автора / Forks, PRs and the author's name
+## Форки, PR и имя автора / Forks, PRs and the author's name
 
 Форкать, брать код в свои проекты и присылать правки можно свободно — пул-реквесты приветствуются. Ветку `master` ведёт Romius, поэтому свои изменения лучше присылать PR, а не пушить в неё напрямую. Лицензия MIT требует сохранять копирайт и разрешение из `LICENSE` в копиях и производных работах: не убирайте имена авторов (`Romius`, а также Andrew Plotkin и jQuery Foundation) из кода, README и интерфейса.
 
