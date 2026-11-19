@@ -12,6 +12,12 @@ An interactive fiction player for Android. By Romius.
 
 I built this when I wanted to play a big Glulx game on my phone and no player would open it — either it ran out of memory or the file just wouldn't fit. So QuestPlayer doesn't flinch at heavy files: while typical mobile alternatives are built for games of a few megabytes and give up on anything heavier, this one handles up to a gigabyte — large Glulx games with resources, sound and graphics open and run. Under the hood are the Glulx virtual machine, designed by Andrew Plotkin (Zarf), and Quixe, his JavaScript interpreter for it; jQuery is in the build as a historical dependency of Quixe/GlkOte, not a whim. The rest is nice detail.
 
+<p align="center">
+  <img src="screenshots/start.png" width="240" alt="Стартовый экран / Start screen">
+  <img src="screenshots/settings.png" width="240" alt="Настройки / Settings">
+  <img src="screenshots/keyboard.png" width="240" alt="Ввод команды / Command line">
+</p>
+
 ## Почему он вообще нужен / Why it's needed
 
 На телефоне интерактивные книги обычно упираются в память и в браузерные лимиты: localStorage кончается на ~5 МБ, вкладка падает, сейв не влезает. Здесь хранилище построено иначе — крупные данные уходят в IndexedDB, которая переживает перезагрузку и не задыхается на десятках мегабайт. Сейв большой Glulx-игры не проблема, даже если он весит около 20 МБ.
