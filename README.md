@@ -102,6 +102,7 @@ From there it's just like playing: type or press the buttons, and the book answe
 ## Что где лежит / What's where
 
 | Файл / File | Зачем / Why |
+| --- | --- |
 | `QuestPlayer.html` | Вся страница: разметка, стили, интерфейс, перевод, сейвы, мост / The whole page: markup, styles, UI, translation, saves, bridge |
 | `engines/glulx.js` | Движок Glulx (GlkOte + Quixe + Glk + Dialog + Blorb + GiLoad) / The Glulx engine (GlkOte + Quixe + Glk + Dialog + Blorb + GiLoad) |
 | `engines/README.md` | Как устроен реестр движков и как добавить новый / How the engine registry works and how to add a new one |
@@ -118,6 +119,7 @@ From there it's just like playing: type or press the buttons, and the book answe
 The file reads top to bottom: two stylesheets and three `<script>` blocks.
 
 | Что / What | Где искать / Where to look |
+| --- | --- |
 | Две таблицы CSS / Two CSS tables | `GlkOte default stylesheet`, затем / then `html, body { … }` — своя разметка / own layout |
 | Big-storage shim | «Big-storage shim» — большие сейвы уезжают из `localStorage` в IndexedDB / large saves move from `localStorage` to IndexedDB |
 | jQuery 1.12.4 | `/*! jQuery v1.12.4` — нужен движку / needed by the engine |
@@ -128,6 +130,7 @@ The file reads top to bottom: two stylesheets and three `<script>` blocks.
 Inside the last block there's a map too — by section names, not line numbers (numbers drift after the first edit). The order is:
 
 | Раздел / Section | Ищите / Search for |
+| --- | --- |
 | Диагностика ввода / Input diagnostics | «Диагностика ввода: короткий журнал» |
 | Языки интерфейса / UI languages | «Interface language» → `var I18N = {` |
 | Настройки UI / UI settings | «Persistent UI settings» |
@@ -157,7 +160,7 @@ The regular version is clean code: not a single "is this the extended copy?" che
 
 The extended build is made by copying the three snippets below into `QuestPlayer.html`. Nothing else to edit: find the spot, replace or insert, save.
 
-#1. Пять быстрых кнопок / Five quick buttons
+### 1. Пять быстрых кнопок / Five quick buttons
 
 Найдите в `var DEFAULTS = {` строку `quickMax: 3,` и замените на:
 
@@ -171,7 +174,7 @@ quickMax: 5,
 
 That's it. The button position is computed by CSS from its index (`--tq-qi`), so the fifth lands under the fourth, and the twentieth under the nineteenth. The buttons themselves and their colours live in the game's `ui.json`.
 
-#2. Шестнадцать цветов кнопок / Sixteen button colours
+### 2. Шестнадцать цветов кнопок / Sixteen button colours
 
 Найдите блок от `var BTN_COLORS = [` до `];` (он стоит перед `var POS_KEYS`) и замените целиком:
 
@@ -204,7 +207,7 @@ Find the block from `var BTN_COLORS = [` to `];` (it sits before `var POS_KEYS`)
 
 The settings grid computes columns itself: 16 colours lay out 4×4, 25 — 5×5. Old `ui.json` files keep working — an unknown colour becomes `default`.
 
-#3. Цвет интерфейса / Interface colour
+### 3. Цвет интерфейса / Interface colour
 
 Найдите в `function init()` строку `    applyPalette();` и вставьте блок сразу после неё:
 
@@ -539,6 +542,7 @@ The APK is a WebView that opens `assets/index.html` and exposes the `AndroidBrid
 The bridge (all methods are `@JavascriptInterface` in `MainActivity`):
 
 | Группа / Group | Методы / Methods |
+| --- | --- |
 | Окно и система / Window and system | `setOrientation`, `platform`, `exitApp` |
 | Файлы и лог / Files and log | `saveBase64`, `saveLog`, `logLine` |
 | Клавиатура / Keyboard | `showKeyboard`, `hideKeyboard`, `showInputPanel`, `hideInputPanel` |
