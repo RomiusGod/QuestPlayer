@@ -583,3 +583,11 @@ Package change. Old internal data isn't migrated — do "Export all" beforehand.
 Код QuestPlayer — MIT, © 2026 Romius (см. `LICENSE`). Движок © Andrew Plotkin (Quixe, GlkOte), jQuery © jQuery Foundation, MIT. Идея, архитектура, интерфейс, сохранения, перевод и Android-мост — Romius; реализация — в соавторстве с AI по ТЗ автора.
 
 QuestPlayer code is MIT, © 2026 Romius (see `LICENSE`). Engine © Andrew Plotkin (Quixe, GlkOte), jQuery © jQuery Foundation, MIT. Idea, architecture, UI, saves, translation and the Android bridge — Romius; implementation — co-authored with AI per the author's spec.
+
+---
+
+Форки, PR и имя автора / Forks, PRs and the author's name
+
+Форкать, брать код в свои проекты и присылать правки можно свободно — пул-реквесты приветствуются. Ветку `master` ведёт Romius, поэтому свои изменения лучше присылать PR, а не пушить в неё напрямую. Лицензия MIT требует сохранять копирайт и разрешение из `LICENSE` в копиях и производных работах: не убирайте имена авторов (`Romius`, а также Andrew Plotkin и jQuery Foundation) из кода, README и интерфейса.
+
+You're free to fork, reuse the code and send changes — pull requests are welcome. Romius maintains `master`, so please send your work as a PR instead of pushing to it. The MIT license requires keeping the copyright notice and permission text from `LICENSE` in copies and derivative works: don't strip the author credits (`Romius`, plus Andrew Plotkin and the jQuery Foundation) from the code, README or UI.
