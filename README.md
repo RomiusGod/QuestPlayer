@@ -24,7 +24,7 @@ The current version and its APK live on the releases page: **[latest release](ht
 
 ## Что нового в 1.1 / What's new in 1.1
 
-- **Z-machine** — `.z3`–`.z8` и `.zblorb` рядом с Glulx: тот же стек, на котором работают Parchment и Lectrote. Одна и та же игра в `.z3` и в `.zblorb` считается одной игрой — сохранения и настройки у них общие.
+- **Z-machine** — `.z3`–`.z8`(кроме z6) и `.zblorb` рядом с Glulx: тот же стек, на котором работают Parchment и Lectrote. Одна и та же игра в `.z3` и в `.zblorb` считается одной игрой — сохранения и настройки у них общие.
 - **Обратный перевод** — строку ввода можно набирать на языке перевода: перед отправкой видно, как команда уйдёт в игру, любое слово заменяется тапом или строка переписывается целиком. Если слова нет в словаре игры, строка об этом скажет.
 - **Язык игры вручную** — в карточке игры появился выбор языка с подписью «Язык»: 23 языка и «Авто». Пригодится, когда определитель ошибся; выбор применяется сразу, в том числе к открытой игре.
 - **Японский и китайский интерфейс** — в настройках теперь четыре языка: русский, английский, японский, китайский. Язык перевода — по-прежнему отдельная настройка, в ней 19 языков.
@@ -34,7 +34,7 @@ The current version and its APK live on the releases page: **[latest release](ht
 
 Ставится поверх 1.0.x: настройки, сохранения и данные игр остаются на месте. APK и полный список изменений — в заметках к выпуску.
 
-- **Z-machine** — `.z3`–`.z8` and `.zblorb` alongside Glulx: the same stack Parchment and Lectrote run on. The same game as `.z3` and as `.zblorb` counts as one game — saves and settings are shared.
+- **Z-machine** — `.z3`–`.z8`(except z6) and `.zblorb` alongside Glulx: the same stack Parchment and Lectrote run on. The same game as `.z3` and as `.zblorb` counts as one game — saves and settings are shared.
 - **Reverse translation** — the input line accepts the translation language: before sending you see how the command will go to the game, any word is swapped with a tap or the whole line rewritten. If a word isn't in the game's dictionary, the line says so.
 - **Game language by hand** — each game card now has a language picker labelled "Lang": 23 languages plus "Auto". Useful when detection gets it wrong; the choice applies at once, including to the open game.
 - **Japanese and Chinese UI** — settings now offer four languages: Russian, English, Japanese, Chinese. The translation language is still a separate setting, with 19 languages.
@@ -52,9 +52,9 @@ On a phone, interactive fiction usually hits memory and browser limits: localSto
 
 ## Что уже работает / What works
 
-Движки: Glulx (.gblorb, .blorb, .ulx) и Z-machine (.z3–.z8, .zblorb). Движок вынесен в отдельный файл: монолита на HTML больше нет, так что добавлять новые движки будет проще. Загрузка простая: стартовый экран → «Выбрать файл игры» → игра пошла.
+Движки: Glulx (.gblorb, .blorb, .ulx) и Z-machine (.z3–.z8(кроме z6), .zblorb). Движок вынесен в отдельный файл: монолита на HTML больше нет, так что добавлять новые движки будет проще. Загрузка простая: стартовый экран → «Выбрать файл игры» → игра пошла.
 
-Engines: Glulx (.gblorb, .blorb, .ulx) and Z-machine (.z3–.z8, .zblorb). The engine lives in its own file: no more HTML monolith, so adding new engines will be easier. Loading is simple: start screen → "Choose game file" → you're in.
+Engines: Glulx (.gblorb, .blorb, .ulx) and Z-machine (.z3–.z8(except z6), .zblorb). The engine lives in its own file: no more HTML monolith, so adding new engines will be easier. Loading is simple: start screen → "Choose game file" → you're in.
 
 ## Перевод / Translation
 
@@ -102,7 +102,7 @@ Built by Romius. Broken — turn on the log, export it and send it to **deyatel9
 
 1. Положите рядом `QuestPlayer.html` и папку `engines` — без неё книга не запустится, движок подгружается отдельно.
 2. Откройте страницу через любой локальный сервер: `python -m http.server`, `npx serve` или «Live Server» в редакторе. Просто двойным щелчком по файлу (`file://`) браузер не даст странице загрузить движок.
-3. Выберите книгу: `.gblorb`, `.blorb`, `.ulx`, `.blb` или Z-machine — `.z3`–`.z8`, `.zblorb`.
+3. Выберите книгу: `.gblorb`, `.blorb`, `.ulx`, `.blb` или Z-machine — `.z3`–`.z8`(кроме z6), `.zblorb`.
 
 Дальше всё как в игре: печатаете или нажимаете кнопки, книга отвечает.
 
@@ -110,7 +110,7 @@ Built by Romius. Broken — turn on the log, export it and send it to **deyatel9
 
 1. Put `QuestPlayer.html` and the `engines` folder side by side — without it the book won't start, the engine is loaded separately.
 2. Open the page through any local server: `python -m http.server`, `npx serve`, or Live Server in your editor. Opening the file directly (`file://`) won't let the page load the engine.
-3. Choose a book: `.gblorb`, `.blorb`, `.ulx`, `.blb` or Z-machine — `.z3`–`.z8`, `.zblorb`.
+3. Choose a book: `.gblorb`, `.blorb`, `.ulx`, `.blb` or Z-machine — `.z3`–`.z8`(except z6), `.zblorb`.
 
 From there it's just like playing: type or press the buttons, and the book answers.
 
