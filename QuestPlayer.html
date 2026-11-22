@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -387,15 +387,19 @@ body { font-family: "Georgia", "Times New Roman", serif; }
 .BufferWindow .Input, .GridWindow .Input { color: var(--tq-buffer-fg); caret-color: var(--tq-buffer-fg); background: transparent; }
 .BufferWindow .Style_input { color: var(--tq-buffer-fg); }
 /* Один индикатор загрузки: и стартовый экран, и открытие файла. */
-#loadingpane { position: absolute; left: 0; top: 38%; width: 100%; text-align: center; color: var(--tq-text); display: none; z-index: 54; font: 20px system-ui, sans-serif; }
+#loadingpane { position: absolute; left: 0; top: 38%; width: 100%; text-align: center; color: var(--tq-text); display: none; z-index: 54; font: 20px system-ui, sans-serif; pointer-events: none; }
 #loadingpane img { display: none; }
 #errorpane { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: var(--tq-pageBg); color: var(--tq-danger); display: none; z-index: 50; padding: 20px; box-sizing: border-box; }
 #errorcontent { font-family: monospace; font-size: 14px; white-space: pre-wrap; }
+#errorhint { color: var(--tq-textMute); font: 14px/1.5 system-ui, sans-serif; max-width: 620px; margin-top: 14px; white-space: pre-wrap; }
 #tq-game-loading { position: fixed; inset: 0; z-index: 55; background: var(--tq-pageBg); color: var(--tq-text); display: none; flex-direction: column; align-items: center; justify-content: center; font: 20px system-ui, sans-serif; }
 #loadingpane .tq-loading-spinner, #tq-game-loading .tq-loading-spinner { width: 40px; height: 40px; border: 4px solid var(--tq-border); border-top-color: var(--tq-accent); border-radius: 50%; animation: tq-spin 1s linear infinite; margin: 0 auto 16px; }
+.tq-load-hint { color: var(--tq-textMute); font: 13px/1.5 system-ui, sans-serif; max-width: 460px; text-align: center; margin: 14px 18px 0; }
+#tq-load-cancel { margin-top: 18px; background: var(--tq-surface2); border: 1px solid var(--tq-surfaceHover); color: var(--tq-textStrong); border-radius: 9px; padding: 11px 22px; font: 15px system-ui, sans-serif; cursor: pointer; }
+#tq-load-cancel:active { background: var(--tq-surfaceHover); }
 @keyframes tq-spin { to { transform: rotate(360deg); } }
-#tq-error-open { margin-top: 22px; background: var(--tq-surface3); color: var(--tq-textStrong); border: 1px solid var(--tq-borderLight);
-  border-radius: 9px; padding: 12px 18px; font: 15px system-ui, sans-serif; cursor: pointer; }
+#tq-error-open { display: inline-block; margin-top: 22px; background: var(--tq-surface3); color: var(--tq-textStrong); border: 1px solid var(--tq-borderLight);
+  border-radius: 9px; padding: 12px 18px; font: 15px system-ui, sans-serif; cursor: pointer; user-select: none; }
 #tq-error-open:active { background: var(--tq-surfaceHover); }
 
 :root {
@@ -423,7 +427,7 @@ body { font-family: "Georgia", "Times New Roman", serif; }
 .BufferWindow a:visited { color: var(--tq-buffer-link-visited); }
 
 #tq-start { position: absolute; inset: 0; z-index: 100; background: var(--tq-startBg); color: var(--tq-text); display: flex; flex-direction: column;
-  align-items: center; justify-content: center; text-align: center; padding: 24px; box-sizing: border-box; overflow-y: auto; }
+  align-items: center; justify-content: flex-start; text-align: center; padding: 24px; box-sizing: border-box; overflow-y: auto; }
 #tq-start h1 { font-size: 26px; margin: 0 0 6px; color: var(--tq-textStrong); font-weight: normal; letter-spacing: 1px; }
 #tq-start .by { color: var(--tq-textMute); font-size: 13px; font-weight: 400; margin: -2px 0 14px; letter-spacing: 0.6px; }
 #tq-start .sub { color: var(--tq-textMute); margin: 0 0 24px; font-size: 15px; }
@@ -440,6 +444,25 @@ body { font-family: "Georgia", "Times New Roman", serif; }
 #tq-start input[type=file] { display: none; }
 #tq-start .hint { color: var(--tq-textMute); font-size: 13px; line-height: 1.5; max-width: 460px; margin-top: 24px; }
 #tq-start .hint b { color: var(--tq-textMute); font-weight: normal; }
+/* Центрируем содержимое авто-полями: если оно выше экрана (альбомная
+   ориентация, длинные японский/китайский тексты), auto схлопывается в 0
+   и заголовок остаётся видимым, а не уезжает за верхний край. */
+#tq-start > :first-child { margin-top: auto; }
+#tq-start > :last-child { margin-bottom: auto; }
+
+/* Альбомная ориентация: ниже по вертикали, поэтому ужимаем отступы и шрифт,
+   а подсказку растягиваем по ширине — иначе она занимает пол-экрана. */
+@media (orientation: landscape) and (max-height: 560px) {
+  #tq-start { padding: 10px 18px; }
+  #tq-start h1 { font-size: 20px; margin: 0 0 2px; }
+  #tq-start .by { font-size: 11px; margin: -1px 0 7px; }
+  #tq-start .tagline { font-size: 10.5px; margin: -4px 0 9px; }
+  #tq-start .sub { font-size: 13px; margin: 0 0 11px; }
+  #tq-start .row { margin: 0 0 9px; }
+  #tq-start label.pick { padding: 10px 18px; font-size: 15px; }
+  #tq-start button.tq-exitbtn { padding: 9px 16px; font: 13px system-ui; }
+  #tq-start .hint { font-size: 11.5px; line-height: 1.35; margin-top: 10px; max-width: 720px; }
+}
 
 /* Player buttons. Everything scales from --tq-scale, set from the settings panel. */
 #tq-tools { position: fixed; z-index: 46; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px;
@@ -519,20 +542,30 @@ body.tq-panel-open #tq-panel { display: block; }
   background: var(--tq-surface); color: var(--tq-text); overflow-y: auto; -webkit-overflow-scrolling: touch; box-sizing: border-box;
   padding: calc(14px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));
   font: 14px/1.45 system-ui, -apple-system, sans-serif; box-shadow: -8px 0 28px rgba(0, 0, 0, 0.45); }
-#tq-panel .tq-head { display: flex; align-items: center; margin-bottom: 14px; }
-#tq-panel .tq-head b { font-size: 17px; font-weight: 600; color: var(--tq-textStrong); }
-#tq-panel .tq-head button { background: none; border: none; color: var(--tq-textMute); font: 20px/1 system-ui; padding: 4px 6px; cursor: pointer; }
-#tq-panel #tq-theme-toggle { font-size: 20px; color: var(--tq-accentSoft); padding: 4px 8px; margin-left: auto; margin-right: auto; }
+#tq-panel .tq-head { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; column-gap: 6px; margin-bottom: 14px; }
+#tq-panel .tq-head b { font-size: 17px; font-weight: 600; color: var(--tq-textStrong); justify-self: start;
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#tq-panel .tq-head button { justify-self: end; background: none; border: none; color: var(--tq-textMute); font: 20px/1 system-ui; padding: 4px 6px; cursor: pointer; }
+#tq-panel .tq-head-mid { display: flex; align-items: center; justify-self: center; justify-content: center; }
+#tq-panel #tq-theme-toggle { font-size: 20px; color: var(--tq-accentSoft); padding: 4px 8px; }
 #tq-panel #tq-theme-toggle:active { color: var(--tq-textInverse); }
 #tq-panel .tq-group { border-top: 1px solid var(--tq-border); padding: 13px 0; }
 #tq-panel .tq-group:first-of-type { border-top: none; padding-top: 0; }
 #tq-panel .tq-title { color: var(--tq-textDim); font-weight: 600; margin-bottom: 8px; }
+#tq-panel .tq-tabs { display: flex; gap: 6px; margin: 0 0 12px; border-bottom: 1px solid var(--tq-border); }
+#tq-panel .tq-tabs[hidden] { display: none; }
+#tq-panel .tq-tab { flex: 1; background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  color: var(--tq-textMute); font: 13.5px system-ui; padding: 8px 4px; cursor: pointer; }
+#tq-panel .tq-tab.tq-tab-on { color: var(--tq-textStrong); border-bottom-color: var(--tq-accentBorder); }
+#tq-panel .tq-tabpane[hidden] { display: none; }
+#tq-panel .tq-empty { color: var(--tq-textMute); font-size: 13px; line-height: 1.5; text-align: center; padding: 40px 14px; }
 #tq-panel .tq-note { color: var(--tq-textMute); font-size: 12.5px; line-height: 1.4; margin: -2px 0 10px; }
 #tq-panel .tq-thanks { margin: 9px 0 0; font-size: 12px; }
 #tq-panel .tq-thanks a { color: var(--tq-textMute); text-decoration: none; border-bottom: 1px dotted var(--tq-borderLight); padding-bottom: 1px; }
 #tq-panel .tq-thanks a:hover, #tq-panel .tq-thanks a:active { color: var(--tq-textDim); border-bottom-color: var(--tq-textMute); }
 #tq-panel label.tq-radio, #tq-panel label.tq-check { display: flex; align-items: center; gap: 9px; padding: 7px 0; cursor: pointer; }
 #tq-panel .tq-radio span { color: var(--tq-textMute); font-size: 12px; }
+#tq-panel .tq-lang-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; }
 #tq-panel input[type=radio], #tq-panel input[type=checkbox] { width: 18px; height: 18px; margin: 0; accent-color: var(--tq-accentBorder); flex: none; }
 #tq-panel .tq-size-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 #tq-panel .tq-size-col, #tq-panel .tq-switch-col { display: flex; flex-direction: column; gap: 7px; }
@@ -577,9 +610,20 @@ body.tq-panel-open #tq-panel { display: block; }
 #tq-panel .tq-filebtn input { display: none; }
 #tq-panel .tq-btns button:active, #tq-panel label.tq-filebtn:active { background: var(--tq-surfaceHover); }
 
-#tq-panel .tq-game-row { border: 1px solid var(--tq-border); border-radius: 9px; padding: 10px; margin-bottom: 8px; }
+#tq-panel .tq-game-row { position: relative; border: 1px solid var(--tq-border); border-radius: 9px;
+  padding: 10px 40px 10px 10px; margin-bottom: 8px; }
+#tq-panel .tq-game-del { position: absolute; top: 4px; right: 4px; width: 28px; height: 28px; padding: 0;
+  background: none; border: none; border-radius: 7px; color: var(--tq-textMute);
+  font: 19px/1 system-ui; cursor: pointer; }
+#tq-panel .tq-game-del:active { color: var(--tq-danger); background: var(--tq-surfaceHover); }
 #tq-panel .tq-game-name { color: var(--tq-text); font-weight: 600; overflow-wrap: anywhere; }
-#tq-panel .tq-game-meta { color: var(--tq-textMute); font-size: 12.5px; margin-top: 2px; }
+#tq-panel .tq-game-meta { display: flex; align-items: center; gap: 8px; color: var(--tq-textMute); font-size: 12.5px; margin-top: 2px; }
+#tq-panel .tq-game-sub { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#tq-panel .tq-game-langlabel { flex: none; font-size: 11.5px; line-height: 19px; color: var(--tq-textMute); }
+#tq-panel select.tq-game-lang { flex: none; max-width: 44%; height: 19px; padding: 0 3px; box-sizing: border-box;
+  background: var(--tq-surfaceInset); color: var(--tq-textMute); border: 1px solid var(--tq-borderInput);
+  border-radius: 6px; font: 11.5px/17px system-ui; outline: none; }
+#tq-panel select.tq-game-lang:focus { border-color: var(--tq-accentBorder); }
 #tq-panel .tq-game-row .tq-btns { margin-top: 8px; }
 #tq-panel .tq-game-row .tq-btns button { padding: 7px 10px; font-size: 12.5px; }
 
@@ -622,6 +666,37 @@ body.tq-panel-open #tq-panel { display: block; }
   background: var(--tq-surface3); color: var(--tq-textDim);
   border: 1px solid var(--tq-borderLight);
 }
+#tq-cmdbar button[hidden] { display: none; }
+
+/* Предпросмотр команды: что именно уйдёт в игру. Слова можно менять
+   тапом по фишке или правкой строки целиком. */
+#tq-cmdprev {
+  position: absolute; left: 0; right: 0; bottom: calc(100% + 6px);
+  box-sizing: border-box;
+  max-height: 46vh; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 6px;
+  background: var(--tq-surface2); border: 1px solid var(--tq-accentBorder);
+  border-radius: 10px; padding: 8px; box-shadow: 0 6px 22px var(--tq-shadow);
+}
+#tq-cmdprev[hidden] { display: none; }
+#tq-cmdprev.tq-below { top: calc(100% + 6px); bottom: auto; }
+#tq-cmdprev .tq-prev-warn { color: #f0b0a8; }
+#tq-cmdprev .tq-prev-hint { font: 12px/1.3 system-ui, sans-serif; color: var(--tq-textMute); }
+#tq-cmdprev input {
+  flex: none; width: 100%; box-sizing: border-box; background: var(--tq-surfaceInset);
+  color: var(--tq-text); border: 1px solid var(--tq-borderInput); border-radius: 8px;
+  padding: 9px 11px; font: 16px system-ui, sans-serif; outline: none;
+}
+#tq-cmdprev input:focus { border-color: var(--tq-accentBorder); }
+#tq-cmdprev .tq-prev-chips, #tq-cmdprev .tq-prev-alts { display: flex; flex-wrap: wrap; gap: 5px; }
+#tq-cmdprev .tq-prev-alts[hidden] { display: none; }
+#tq-cmdprev .tq-chip, #tq-cmdprev .tq-alt {
+  flex: none; height: auto; padding: 4px 9px; border-radius: 7px; cursor: pointer;
+  font: 13px/1.2 system-ui, sans-serif; background: var(--tq-surface3);
+  color: var(--tq-textStrong); border: 1px solid var(--tq-borderLight);
+}
+#tq-cmdprev .tq-chip-miss { border-color: #a2564b; color: #f0c8c8; }
+#tq-cmdprev .tq-alt { background: var(--tq-surfaceToolActive); }
 
 @media (min-width: 900px) {
   .BufferWindow { font-size: 18px; }
@@ -633,8 +708,13 @@ body.tq-panel-open #tq-panel { display: block; }
 <div id="gameport">
   <div id="windowport"></div>
   <div id="loadingpane" style="display:block"><div class="tq-loading-spinner"></div><em data-tq="loading">Загрузка...</em></div>
-  <div id="tq-game-loading" style="display:none;"><div class="tq-loading-spinner"></div><div data-tq="loadingGame">Запускаю игру...</div></div>
-  <div id="errorpane"><div id="errorcontent"></div><button id="tq-error-open" type="button" data-tq="errorOpen">Выбрать другой файл</button></div>
+  <div id="tq-game-loading" style="display:none;">
+    <div class="tq-loading-spinner"></div>
+    <div data-tq="loadingGame">Запускаю игру...</div>
+    <div class="tq-load-hint" data-tq="loadingHint">Если файл не открывается, нажмите «Отмена» и выберите другой.</div>
+    <button id="tq-load-cancel" type="button" data-tq="cancelLoad">Отмена</button>
+  </div>
+  <div id="errorpane"><div id="errorcontent"></div><div id="errorhint"></div><label id="tq-error-open" for="tq-file" data-tq="errorOpen">Выбрать другой файл</label></div>
 </div>
 
 <div id="tq-start" style="display:none">
@@ -643,12 +723,12 @@ body.tq-panel-open #tq-panel { display: block; }
   <p class="tagline">for players by player</p>
   <p class="sub" data-tq="subtitle">Универсальный плеер интерактивных книг</p>
   <div class="row">
-    <label class="pick"><span data-tq="pickGame">Выбрать файл игры</span><input type="file" id="tq-file" accept=".gblorb,.blorb,.ulx,.blb"></label>
+    <label class="pick"><span data-tq="pickGame">Выбрать файл игры</span><input type="file" id="tq-file" accept=".gblorb,.blorb,.ulx,.blb,.zblorb,.z1,.z2,.z3,.z4,.z5,.z6,.z7,.z8"></label>
   </div>
   <div class="row" id="tq-exit-start-row" hidden>
     <button class="tq-exitbtn" id="tq-exit-start" type="button" data-tq="exitApp">Закрыть приложение</button>
   </div>
-  <p class="hint" data-tq-html="startHint">Выберите файл игры: <b>.gblorb</b>, <b>.blorb</b>, <b>.ulx</b> или <b>.blb</b>.<br>
+  <p class="hint" data-tq-html="startHint">Выберите файл игры: <b>.gblorb</b>, <b>.blorb</b>, <b>.ulx</b>, <b>.blb</b>, <b>.zblorb</b> или <b>.z3</b>–<b>.z8</b>.<br>
   Файл остаётся в телефоне, никуда не отправляется.<br>
   Для перевода нужен интернет.<br><br>
   Переводятся описания. <b>Тап по абзацу</b> — показать оригинал.<br>
@@ -678,15 +758,25 @@ body.tq-panel-open #tq-panel { display: block; }
 <div id="tq-panel" aria-hidden="true">
   <div class="tq-sheet" role="dialog" aria-label="Настройки кнопок">
     <div class="tq-head">
-      <b data-tq="panelTitle">Кнопки</b>
-      <button id="tq-theme-toggle" type="button" aria-label="Тема">☀</button>
+      <b id="tq-panel-title">Настройки</b>
+      <span class="tq-head-mid"><button id="tq-theme-toggle" type="button" aria-label="Тема">☀</button></span>
       <button id="tq-panel-close" type="button" aria-label="Закрыть">✕</button>
     </div>
 
+    <div class="tq-tabs" id="tq-tabs" hidden>
+      <button type="button" class="tq-tab tq-tab-on" data-tab="opts" data-tq="tabOptions">Опции</button>
+      <button type="button" class="tq-tab" data-tab="games" data-tq="tabGames">Данные игр</button>
+    </div>
+
+    <div class="tq-tabpane" data-pane="opts">
     <div class="tq-group">
       <div class="tq-title" data-tq="interface">Интерфейс</div>
-      <label class="tq-radio"><input type="radio" name="tq-uilang" value="ru"> Русский</label>
-      <label class="tq-radio"><input type="radio" name="tq-uilang" value="en"> English</label>
+      <div class="tq-lang-grid">
+        <label class="tq-radio"><input type="radio" name="tq-uilang" value="ru"> Русский</label>
+        <label class="tq-radio"><input type="radio" name="tq-uilang" value="en"> English</label>
+        <label class="tq-radio"><input type="radio" name="tq-uilang" value="ja"> 日本語</label>
+        <label class="tq-radio"><input type="radio" name="tq-uilang" value="zh"> 中文</label>
+      </div>
     </div>
 
     <div class="tq-group">
@@ -760,7 +850,7 @@ body.tq-panel-open #tq-panel { display: block; }
     </div>
 
     <div class="tq-group" id="tq-games-group" hidden>
-      <div class="tq-title" data-tq="gamesData">Данные игр</div>
+      <div class="tq-title" data-tq="gamesDataGroup">Данные и синхронизация</div>
       <div class="tq-note" id="tq-games-total-note"></div>
       <div class="tq-btns">
         <button id="tq-games-import" type="button" data-tq="gamesImport">Импорт</button>
@@ -771,7 +861,6 @@ body.tq-panel-open #tq-panel { display: block; }
       </div>
       <div class="tq-note" data-tq="syncNote">  Обе сборки работают с одним файлом в выбранной папке: выгрузите данные в одной сборке и нажмите «Принять из папки» в другой. Принятые данные заменяют прежние, кроме быстрых кнопок: если у игры они уже настроены, остаются свои. Сохранения с тем же именем добавляются с номером.</div>
       <div class="tq-note" id="tq-sync-folder"></div>
-      <div id="tq-games-list"></div>
       <input type="file" id="tq-games-file" accept=".qpzip,application/zip,application/octet-stream" style="display:none">
     </div>
 
@@ -803,6 +892,12 @@ body.tq-panel-open #tq-panel { display: block; }
     <div class="tq-group">
       <div class="tq-note" id="tq-build" style="margin:0;"></div>
       <div class="tq-thanks"><a id="tq-thanks" data-tq="thanks" href="https://app.lava.top/products/6aa79a8c-6a6b-44b9-b6b0-727f7651e36e" rel="noopener">Поблагодарить</a></div>
+      <div class="tq-thanks"><a id="tq-contact" data-tq="contact" href="mailto:deyatel94@yandex.ru" rel="noopener">Обратная связь: deyatel94@yandex.ru</a></div>
+    </div>
+    </div>
+
+    <div class="tq-tabpane" data-pane="games" hidden>
+      <div id="tq-games-list"></div>
     </div>
   </div>
 </div>
@@ -961,8 +1056,8 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
   function clean(t) { return (t || '').replace(/\s+/g, ' ').trim(); }
 
   /* Метка сборки — чтобы видеть, какая версия реально загружена в APK. */
-  var APP_VERSION = '1.0';
-  var APP_BUILD = '2026-11-19';
+  var APP_VERSION = '1.1.0';
+  var APP_BUILD = '2026-11-22j';
 
   /* ---------------------------------------------------------------
      Диагностика ввода: короткий журнал событий клавиатуры.
@@ -1041,7 +1136,8 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     ru: {
       subtitle: 'Универсальный плеер интерактивных книг',
       pickGame: 'Выбрать файл игры',
-      startHint: 'Выберите файл игры: <b>.gblorb</b>, <b>.blorb</b>, <b>.ulx</b> или <b>.blb</b>.<br>' +
+      startHint: 'Выберите файл игры: <b>.gblorb</b>, <b>.blorb</b>, <b>.ulx</b>, <b>.blb</b>, <b>.zblorb</b> или <b>.z3</b>–<b>.z8</b>.<br>' +
+        'Версии Z-machine с графикой (v6) не поддерживаются.<br>' +
         'Файл остаётся в телефоне, никуда не отправляется.<br>' +
         'Для перевода нужен интернет.<br><br>' +
         'Переводятся описания. <b>Тап по абзацу</b> — показать оригинал.<br>' +
@@ -1052,8 +1148,9 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       gameFileNote: 'Загружен не тот файл? Выберите нужный — страница перезапустится.',
       openAnother: 'Открыть другой файл игры',
       thanks: 'Поблагодарить',
+      contact: 'Обратная связь: deyatel94@yandex.ru',
       errorOpen: 'Выбрать другой файл',
-      panelTitle: 'Настройки', interface: 'Интерфейс', translation: 'Перевод',
+      panelTitle: 'Настройки', interface: 'Язык интерфейса', translation: 'Перевод',
       translationNote: 'Язык, на который переводятся описания в игре.',
       size: 'Размер', large: 'Крупные', compact: 'Компактные',
       themeTitle: 'Тема',
@@ -1072,9 +1169,16 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       saveImport: 'Импорт сохранения', saveImported: 'Сохранение добавлено: {name}',
       saveImportNoGame: 'Сначала откройте игру, затем импортируйте сохранение.',
       gamesData: 'Данные игр', gamesTotal: 'Общий размер: {size}',
-      gamesEmpty: 'Нет сохранённых данных',
+      gamesDataGroup: 'Данные и синхронизация',
+      tabOptions: 'Опции', tabGames: 'Данные игр',
+      gameLang: 'Язык игры', gameLangLabel: 'Язык', gameLangAuto: 'Авто',
+      gamesEmpty: 'Пока нет данных — начните играть, и они появятся здесь.',
       gamesImport: 'Импорт', gamesDeleteSaves: 'Удалить сейвы',
       gamesDeleteOther: 'Удалить остальное', gamesExport: 'Экспорт',
+      gamesDeleteGame: 'Удалить игру',
+      gamesDeleteGameConfirm: 'Удалить игру «{name}» целиком — сейвы, настройки и перевод? Отменить это будет нельзя.',
+      gamesDeleteGameDone: 'Игра «{name}» удалена',
+      gamesDeleteGameFail: 'Не удалось удалить папку игры',
       gamesRename: 'Переименовать', gamesSize: '{size}',
       gamesImported: 'Импортировано: {name}',
       gamesImportFail: 'Не удалось импортировать архив',
@@ -1096,6 +1200,10 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       menuTitle: 'Настройки', kbTitle: 'Клавиатура', fullTitle: 'Полный экран',
       cmdbarPlaceholder: 'Команда', cmdbarSend: 'Отправить',
       cmdbarSendFail: 'Игра сейчас не принимает ввод. Попробуйте ещё раз.',
+      cmdPrevHint: 'Enter — отправить, тап по слову — выбрать другой перевод',
+      cmdPrevNoAlt: 'Других вариантов в словаре нет',
+      cmdPrevNone: 'Перевод не найден: этих слов нет в словаре игры',
+      cmdPrevMiss: 'Нет перевода: {words}',
       close: 'Закрыть', off: 'выкл', quickButton: 'Кнопка {n}',
       presetTitle: 'Команда {v}', customPlaceholder: 'Своя команда — отправится как есть',
       translateOn: 'Перевод включён', translateOff: 'Перевод выключен',
@@ -1116,6 +1224,13 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       loadFail: 'Не удалось загрузить {name}: {e}',
       loadingGame: 'Запускаю игру...',
       readingFile: 'Читаю файл ({n} МБ)...',
+      cancelLoad: 'Отмена',
+      loadingHint: 'Большой файл читается дольше. Если игра не открывается — нажмите «Отмена» и выберите другой файл.',
+      notGameFile: 'Это не файл игры: внутри нет ни Z-кода, ни Glulx-игры.',
+      notGameFileHint: 'Обычно так бывает, если файл скачался не полностью или это архив/ярлык вместо самой игры. Скачайте игру заново (.z5, .z8, .zblorb или .gblorb) и выберите файл ещё раз.',
+      zVersionUnsupported: 'Игра сделана для Z-machine версии {v}, а плеер понимает версии 3, 4, 5 и 8.',
+      zVersionHint: 'Версия с графикой (v6) не запустится. Возьмите вариант этой же игры для .z5 или обычный .zblorb — он откроется.',
+      loadHint: 'Плеер открывает .z3–.z8, .zblorb, .gblorb, .blorb, .ulx. Если игра не запустилась, попробуйте другой файл.',
       confirmRestart: 'Перезапустить страницу и выбрать файл заново?',
       pickerSaveTitle: 'Загрузить сохранение', pickerFileTitle: 'Выбрать файл',
       pickerSaveText: 'Выберите файл .sav с телефона', pickerFileText: 'Выберите файл с телефона',
@@ -1144,7 +1259,8 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     en: {
       subtitle: 'Universal interactive fiction player',
       pickGame: 'Choose a game file',
-      startHint: 'Choose a game file: <b>.gblorb</b>, <b>.blorb</b>, <b>.ulx</b> or <b>.blb</b>.<br>' +
+      startHint: 'Choose a game file: <b>.gblorb</b>, <b>.blorb</b>, <b>.ulx</b>, <b>.blb</b>, <b>.zblorb</b> or <b>.z3</b>–<b>.z8</b>.<br>' +
+        'Z-machine v6 (graphics) games are not supported.<br>' +
         'The file stays on your phone and is never uploaded.<br>' +
         'Translation needs an internet connection.<br><br>' +
         'Descriptions are translated. <b>Tap a paragraph</b> to see the original.<br>' +
@@ -1155,8 +1271,9 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       gameFileNote: 'Wrong game loaded? Choose the right one — the page will restart.',
       openAnother: 'Open another game file',
       thanks: 'Say thanks',
+      contact: 'Contact: deyatel94@yandex.ru',
       errorOpen: 'Choose another file',
-      panelTitle: 'Settings', interface: 'Interface', translation: 'Translation',
+      panelTitle: 'Settings', interface: 'Interface language', translation: 'Translation',
       translationNote: 'Language that in-game descriptions are translated into.',
       size: 'Size', large: 'Large', compact: 'Compact',
       themeTitle: 'Theme',
@@ -1175,9 +1292,16 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       saveImport: 'Import save', saveImported: 'Save added: {name}',
       saveImportNoGame: 'Open a game first, then import the save.',
       gamesData: 'Game data', gamesTotal: 'Total size: {size}',
-      gamesEmpty: 'No saved data',
+      gamesDataGroup: 'Data and sync',
+      tabOptions: 'Options', tabGames: 'Game data',
+      gameLang: 'Game language', gameLangLabel: 'Lang', gameLangAuto: 'Auto',
+      gamesEmpty: 'No data yet — start playing and it will show up here.',
       gamesImport: 'Import', gamesDeleteSaves: 'Delete saves',
       gamesDeleteOther: 'Delete the rest', gamesExport: 'Export',
+      gamesDeleteGame: 'Delete game',
+      gamesDeleteGameConfirm: 'Delete the game "{name}" completely — saves, settings and translation? This cannot be undone.',
+      gamesDeleteGameDone: 'Game "{name}" deleted',
+      gamesDeleteGameFail: 'Could not delete the game folder',
       gamesRename: 'Rename', gamesSize: '{size}',
       gamesImported: 'Imported: {name}',
       gamesImportFail: 'Could not import the archive',
@@ -1199,6 +1323,10 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       menuTitle: 'Settings', kbTitle: 'Keyboard', fullTitle: 'Fullscreen',
       cmdbarPlaceholder: 'Command', cmdbarSend: 'Send',
       cmdbarSendFail: 'The game is not accepting input right now. Try again.',
+      cmdPrevHint: 'Enter sends, tap a word to pick another translation',
+      cmdPrevNoAlt: 'No other variants in the dictionary',
+      cmdPrevNone: 'No translation: these words are not in the game dictionary',
+      cmdPrevMiss: 'No translation: {words}',
       close: 'Close', off: 'off', quickButton: 'Button {n}',
       presetTitle: 'Command {v}', customPlaceholder: 'Custom command — sent as typed',
       translateOn: 'Translation on', translateOff: 'Translation off',
@@ -1219,6 +1347,13 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       loadFail: 'Could not load {name}: {e}',
       loadingGame: 'Starting the game...',
       readingFile: 'Reading file ({n} MB)...',
+      cancelLoad: 'Cancel',
+      loadingHint: 'A large file takes longer to read. If the game does not open, press “Cancel” and choose another file.',
+      notGameFile: 'This is not a game file: there is no Z-code or Glulx game inside.',
+      notGameFileHint: 'This usually means the file was downloaded incompletely, or it is an archive or a shortcut instead of the game itself. Download the game again (.z5, .z8, .zblorb or .gblorb) and pick it once more.',
+      zVersionUnsupported: 'This game needs Z-machine version {v}; the player understands versions 3, 4, 5 and 8.',
+      zVersionHint: 'The graphics version (v6) will not run. Take the .z5 or the plain .zblorb build of the same game — that one opens.',
+      loadHint: 'The player opens .z3–.z8, .zblorb, .gblorb, .blorb and .ulx. If the game did not start, try another file.',
       confirmRestart: 'Reload the page and choose a game file again?',
       pickerSaveTitle: 'Load a save', pickerFileTitle: 'Choose a file',
       pickerSaveText: 'Choose a .sav file from your phone', pickerFileText: 'Choose a file from your phone',
@@ -1243,7 +1378,253 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       exitApp: 'Exit app',
       orientation: 'Orientation', orientationNote: 'How to hold the screen. Auto — follows phone rotation.',
       orientationAuto: 'Auto', orientationPortrait: 'Portrait only', orientationLandscape: 'Landscape only',
-    }
+    },
+    ja: {
+      subtitle: 'ユニバーサル・インタラクティブフィクション・プレイヤー',
+      pickGame: 'ゲームファイルを選ぶ',
+      startHint: 'ゲームファイルを選んでください：<b>.gblorb</b>、<b>.blorb</b>、<b>.ulx</b>、<b>.blb</b>、<b>.zblorb</b>、<b>.z3</b>–<b>.z8</b>。<br>' +
+        'Z-machine v6（グラフィック）のゲームには対応していません。<br>' +
+        'ファイルは端末内に残り、どこにも送信されません。<br>' +
+        '翻訳にはインターネット接続が必要です。<br><br>' +
+        '翻訳されるのは描写文です。<b>段落をタップ</b>すると原文が表示されます。<br>' +
+        '言語コードのボタンで翻訳を完全にオフにできます。<br>' +
+        'セーブを読み込むには、ゲーム内で <b>Restore</b> と入力してください — ファイル選択が開きます。',
+      file: 'ファイル', loading: '読み込み中...',
+      gameFileTitle: 'ゲームファイル',
+      gameFileNote: '違うファイルを読み込みましたか？正しいものを選んでください — ページが再起動します。',
+      openAnother: '別のゲームファイルを開く',
+      thanks: '作者に感謝する',
+      contact: '連絡先：deyatel94@yandex.ru',
+      errorOpen: '別のファイルを選ぶ',
+      panelTitle: '設定', interface: 'インターフェースの言語', translation: '翻訳',
+      translationNote: 'ゲーム内の描写文を翻訳する言語。',
+      size: 'サイズ', large: '大きい', compact: 'コンパクト',
+      themeTitle: 'テーマ',
+      themeNote: 'ゲーム本文ウィンドウの見た目。画像やグラフィックは変わりません。',
+      themeLight: 'ライト', themeDark: 'ダーク（AMOLED）', arrows: '矢印',
+      sound: 'サウンド', graphics: 'グラフィック',
+      quickTitle: 'クイックボタン',
+      quickNote: '独自コマンドは入力したとおりにゲームへ送られます。',
+      quickAdd: '＋ クイックコマンド',
+      quickColor: 'ボタンの色',
+      quickLimit: 'このビルドでは {n} 個のボタンが表示されます。残りは保存され、拡張ビルドで表示されます。',
+      dragButtons: 'ボタンを移動', dragReset: '位置をリセット',
+      savesTitle: 'セーブ',
+      savesNote: 'ゲームを保存すると、ファイルは自動で「ダウンロード」に保存されます。ゲーム内で Restore を選ぶと、すぐに端末のファイル選択が開きます。',
+      saveFiles: 'すべてのセーブをファイルに保存', exportAll: 'すべて書き出す',
+      saveImport: 'セーブを読み込む', saveImported: 'セーブを追加しました：{name}',
+      saveImportNoGame: '先にゲームを開いてから、セーブを読み込んでください。',
+      gamesData: 'ゲームデータ', gamesTotal: '合計サイズ：{size}',
+      gamesDataGroup: 'データと同期',
+      tabOptions: 'オプション', tabGames: 'ゲームデータ',
+      gameLang: 'ゲームの言語', gameLangLabel: '言語', gameLangAuto: '自動',
+      gamesEmpty: 'データはまだありません。ゲームを始めるとここに表示されます。',
+      gamesImport: '読み込む', gamesDeleteSaves: 'セーブを削除',
+      gamesDeleteOther: 'その他を削除', gamesExport: '書き出す',
+      gamesDeleteGame: 'ゲームを削除',
+      gamesDeleteGameConfirm: '「{name}」をセーブ・設定・翻訳ごと完全に削除しますか？元に戻せません。',
+      gamesDeleteGameDone: '「{name}」を削除しました',
+      gamesDeleteGameFail: 'ゲームのフォルダーを削除できませんでした',
+      gamesRename: '名前を変更', gamesSize: '{size}',
+      gamesImported: '読み込みました：{name}',
+      gamesImportFail: 'アーカイブを読み込めませんでした',
+      gamesOverwrite: '既存のその他のデータを上書きしますか？',
+      gamesDeleteSavesConfirm: '「{name}」のセーブをすべて削除しますか？',
+      gamesDeleteOtherConfirm: '「{name}」の設定と翻訳を削除しますか？',
+      gamesExported: 'アーカイブを「ダウンロード」に保存しました',
+      gamesExportFail: 'ゲームを書き出せませんでした',
+      syncOut: 'フォルダーへ送る', syncIn: 'フォルダーから取り込む',
+      syncNote: '両方のビルドは選択したフォルダーの同じファイルを使います。一方でデータを送り、もう一方で「フォルダーから取り込む」を押してください。取り込んだデータは既存のデータを置き換えますが、クイックボタンは例外です：すでに設定したボタンはそのまま残ります。同名のセーブは番号付きで追加されます。',
+      syncFolder: 'フォルダー：{name}',
+      syncPickFolder: 'フォルダーが未選択です。一度選んでください — 選択はシステムが記憶します。',
+      syncOutDone: '送信したゲーム：{n}。もう一方のビルドで「フォルダーから取り込む」を押してください。',
+      syncInDone: '取り込み：ゲーム {n}、セーブ {m}、ファイル {k}。',
+      syncInNone: 'フォルダーに交換ファイルがありません。先にもう一方のビルドからデータを送ってください。',
+      syncFail: '同期に失敗しました',
+      renameTitle: 'ゲーム名', renameSave: '保存', renameCancel: 'キャンセル',
+      collapseHide: 'ボタンを隠す', collapseShow: 'ボタンを表示',
+      menuTitle: '設定', kbTitle: 'キーボード', fullTitle: '全画面',
+      cmdbarPlaceholder: 'コマンド', cmdbarSend: '送信',
+      cmdbarSendFail: '現在ゲームは入力を受け付けていません。もう一度お試しください。',
+      cmdPrevHint: 'Enter で送信、単語をタップすると別の訳を選べます',
+      cmdPrevNoAlt: '辞書に他の候補はありません',
+      cmdPrevNone: '訳が見つかりません：この語はゲームの辞書にありません',
+      cmdPrevMiss: '訳なし：{words}',
+      close: '閉じる', off: 'オフ', quickButton: 'ボタン {n}',
+      presetTitle: 'コマンド {v}', customPlaceholder: '独自コマンド — 入力したとおりに送信',
+      translateOn: '翻訳オン', translateOff: '翻訳オフ',
+      saveDownloaded: 'セーブを「ダウンロード」に保存しました：{name}',
+      notSave: 'これはセーブファイル（.sav）ではありません',
+      readSaveFail: 'セーブファイルを読み込めませんでした',
+      readFileFail: 'ファイルを読み込めませんでした',
+      noSaves: 'セーブはまだありません',
+      saveFound: 'セーブが見つかりました：{name}（{date}）。',
+      saveLoad: '読み込む', saveOther: '別のものを選ぶ', saveNew: '新しいゲーム',
+      exportFail: 'セーブを読み込めませんでした',
+      exported: '書き出したセーブ：{n}',
+      restoreHint: 'セーブはゲーム内から読み込みます：Restore',
+      startFail: 'ゲームを開始できませんでした：{e}',
+      unknownFormat: 'このファイルを認識できませんでした。このプレイヤーが開ける形式：{list}。',
+      formatUnsupported: '{f} 形式はまだ対応していません：プレイヤーにそのエンジンがありません。',
+      startSlow: '起動に時間がかかりすぎています。大きなゲームは端末のメモリに収まらないことがあります — 別のファイルを試すか、アプリを再起動してください。',
+      loadFail: '{name} を読み込めませんでした：{e}',
+      loadingGame: 'ゲームを起動しています...',
+      readingFile: 'ファイルを読み込んでいます（{n} MB）...',
+      cancelLoad: 'キャンセル',
+      loadingHint: '大きなファイルは読み込みに時間がかかります。開かないときは「キャンセル」を押して別のファイルを選んでください。',
+      notGameFile: 'これはゲームファイルではありません：中に Z-code も Glulx のゲームもありません。',
+      notGameFileHint: 'ファイルが途中までしかダウンロードされていないか、ゲーム本体ではなくアーカイブやショートカットの可能性があります。ゲームをダウンロードし直して（.z5、.z8、.zblorb、.gblorb）、もう一度選んでください。',
+      zVersionUnsupported: 'このゲームは Z-machine バージョン {v} 用です。プレイヤーは 3、4、5、8 に対応しています。',
+      zVersionHint: 'グラフィック版（v6）は動きません。同じゲームの .z5 か通常の .zblorb を選んでください。',
+      loadHint: 'プレイヤーが開けるのは .z3–.z8、.zblorb、.gblorb、.blorb、.ulx です。起動しないときは別のファイルを試してください。',
+      confirmRestart: 'ページを再読み込みして、ゲームファイルを選び直しますか？',
+      pickerSaveTitle: 'セーブを読み込む', pickerFileTitle: 'ファイルを選ぶ',
+      pickerSaveText: '端末から .sav ファイルを選んでください', pickerFileText: '端末からファイルを選んでください',
+      pickerPick: 'ファイルを選ぶ', pickerCancel: 'キャンセル',
+      pickerSaveWriteTitle: 'ゲームを保存',
+      pickerSaveWritePlaceholder: 'セーブ名',
+      pickerSave: '保存',
+      pickerOverwrite: '上書き',
+      pickerOverwriteText: 'ファイル「{name}」はすでに存在します。上書きしますか？',
+      pickerFileWriteTitle: '保存：{kind}',
+      pickerFileReadTitle: '選択：{kind}',
+      pickerKindTranscript: 'トランスクリプト',
+      pickerKindData: 'データ',
+      pickerKindCommand: 'コマンド',
+      pickerNoFiles: 'ファイルはまだありません',
+      exitTitle: 'アプリ',
+      diagTitle: '診断',
+      diagNote: 'ログはオンにしている間だけ記録されます。「ログを書き出す」で「ダウンロード」に保存されます。',
+      diagStart: 'ログを開始', diagStop: 'ログを停止', diagSave: 'ログを書き出す',
+      diagEmpty: 'ログはまだ空です', diagSaved: 'ログを保存しました：{path}', diagSaveFail: 'ログを保存できませんでした',
+      exitNote: 'プレイヤーを完全に終了します。ゲームの進行状況はセーブに別途保存されます。',
+      exitApp: 'アプリを終了',
+      orientation: '画面の向き', orientationNote: '画面の持ち方。自動 — 端末の回転に合わせます。',
+      orientationAuto: '自動', orientationPortrait: '縦のみ', orientationLandscape: '横のみ',
+    },
+    zh: {
+      subtitle: '通用互动小说播放器',
+      pickGame: '选择游戏文件',
+      startHint: '选择游戏文件：<b>.gblorb</b>、<b>.blorb</b>、<b>.ulx</b>、<b>.blb</b>、<b>.zblorb</b> 或 <b>.z3</b>–<b>.z8</b>。<br>' +
+        '不支持带图形的 Z-machine v6 游戏。<br>' +
+        '文件留在手机里，不会发送到任何地方。<br>' +
+        '翻译需要网络连接。<br><br>' +
+        '翻译的是描述文字。<b>点按段落</b>可查看原文。<br>' +
+        '语言代码按钮可完全关闭翻译。<br>' +
+        '要载入存档，请在游戏中输入 <b>Restore</b> — 会打开文件选择器。',
+      file: '文件', loading: '加载中...',
+      gameFileTitle: '游戏文件',
+      gameFileNote: '加载了错误的文件？选择正确的文件 — 页面会重新启动。',
+      openAnother: '打开另一个游戏文件',
+      thanks: '感谢作者',
+      contact: '联系方式：deyatel94@yandex.ru',
+      errorOpen: '选择其他文件',
+      panelTitle: '设置', interface: '界面语言', translation: '翻译',
+      translationNote: '游戏中描述文字翻译成的语言。',
+      size: '大小', large: '大', compact: '紧凑',
+      themeTitle: '主题',
+      themeNote: '游戏文本窗口的外观。图片和图形不变。',
+      themeLight: '浅色', themeDark: '深色（AMOLED）', arrows: '方向键',
+      sound: '声音', graphics: '图形',
+      quickTitle: '快捷按钮',
+      quickNote: '自定义命令按输入原样发送到游戏。',
+      quickAdd: '＋ 快捷命令',
+      quickColor: '按钮颜色',
+      quickLimit: '此版本显示 {n} 个按钮；其余已保存，将在扩展版本中显示。',
+      dragButtons: '拖动按钮', dragReset: '重置位置',
+      savesTitle: '存档',
+      savesNote: '游戏保存时，存档会自动下载到「下载」文件夹。在游戏中选择 Restore 会立即打开手机的文件选择器。',
+      saveFiles: '将每个存档保存为文件', exportAll: '全部导出',
+      saveImport: '导入存档', saveImported: '已添加存档：{name}',
+      saveImportNoGame: '请先打开游戏，再导入存档。',
+      gamesData: '游戏数据', gamesTotal: '总大小：{size}',
+      gamesDataGroup: '数据与同步',
+      tabOptions: '选项', tabGames: '游戏数据',
+      gameLang: '游戏语言', gameLangLabel: '语言', gameLangAuto: '自动',
+      gamesEmpty: '还没有数据，开始游戏后就会出现在这里。',
+      gamesImport: '导入', gamesDeleteSaves: '删除存档',
+      gamesDeleteOther: '删除其余数据', gamesExport: '导出',
+      gamesDeleteGame: '删除游戏',
+      gamesDeleteGameConfirm: '彻底删除「{name}」及其存档、设置和翻译？此操作无法撤销。',
+      gamesDeleteGameDone: '已删除「{name}」',
+      gamesDeleteGameFail: '无法删除游戏文件夹',
+      gamesRename: '重命名', gamesSize: '{size}',
+      gamesImported: '已导入：{name}',
+      gamesImportFail: '无法导入压缩包',
+      gamesOverwrite: '其余数据已存在时要覆盖吗？',
+      gamesDeleteSavesConfirm: '删除「{name}」的所有存档？',
+      gamesDeleteOtherConfirm: '删除「{name}」的设置和翻译？',
+      gamesExported: '压缩包已保存到「下载」',
+      gamesExportFail: '无法导出游戏',
+      syncOut: '发送到文件夹', syncIn: '从文件夹接收',
+      syncNote: '两个版本共用所选文件夹中的同一个文件：在一个版本中发送数据，然后在另一个版本中按「从文件夹接收」。接收的数据会替换原有数据，但快捷按钮例外：已经设置好的按钮会保留。同名存档会加编号添加。',
+      syncFolder: '文件夹：{name}',
+      syncPickFolder: '尚未选择文件夹。选择一次即可 — 系统会记住。',
+      syncOutDone: '已发送游戏：{n}。现在请在另一个版本中按「从文件夹接收」。',
+      syncInDone: '已接收：游戏 {n}、存档 {m}、文件 {k}。',
+      syncInNone: '文件夹中没有交换文件。请先从另一个版本发送数据。',
+      syncFail: '同步失败',
+      renameTitle: '游戏名称', renameSave: '保存', renameCancel: '取消',
+      collapseHide: '隐藏按钮', collapseShow: '显示按钮',
+      menuTitle: '设置', kbTitle: '键盘', fullTitle: '全屏',
+      cmdbarPlaceholder: '命令', cmdbarSend: '发送',
+      cmdbarSendFail: '游戏目前不接受输入。请再试一次。',
+      cmdPrevHint: '回车发送，点按单词可另选译法',
+      cmdPrevNoAlt: '词典中没有其他候选',
+      cmdPrevNone: '没有译文：这些词不在游戏词典中',
+      cmdPrevMiss: '没有译文：{words}',
+      close: '关闭', off: '关', quickButton: '按钮 {n}',
+      presetTitle: '命令 {v}', customPlaceholder: '自定义命令 — 按输入原样发送',
+      translateOn: '翻译开启', translateOff: '翻译关闭',
+      saveDownloaded: '存档已下载到「下载」：{name}',
+      notSave: '这不是存档文件（.sav）',
+      readSaveFail: '无法读取存档文件',
+      readFileFail: '无法读取文件',
+      noSaves: '还没有存档',
+      saveFound: '找到存档：{name}（{date}）。',
+      saveLoad: '载入', saveOther: '选择其他', saveNew: '新游戏',
+      exportFail: '无法读取存档',
+      exported: '已导出存档：{n}',
+      restoreHint: '在游戏中载入存档：Restore',
+      startFail: '无法启动游戏：{e}',
+      unknownFormat: '无法识别此文件。此播放器可打开：{list}。',
+      formatUnsupported: '尚不支持 {f} 格式：播放器中没有对应引擎。',
+      startSlow: '启动时间过长。大型游戏可能放不进手机内存 — 请换一个文件或重启应用。',
+      loadFail: '无法加载 {name}：{e}',
+      loadingGame: '正在启动游戏...',
+      readingFile: '正在读取文件（{n} MB）...',
+      cancelLoad: '取消',
+      loadingHint: '较大的文件读取时间更长。如果游戏打不开，请按「取消」并选择另一个文件。',
+      notGameFile: '这不是游戏文件：里面既没有 Z-code，也没有 Glulx 游戏。',
+      notGameFileHint: '通常是文件没有下载完整，或者下载到的是压缩包/快捷方式而不是游戏本身。请重新下载游戏（.z5、.z8、.zblorb 或 .gblorb）后再选择。',
+      zVersionUnsupported: '这个游戏需要 Z-machine 版本 {v}，播放器支持版本 3、4、5 和 8。',
+      zVersionHint: '图形版（v6）无法运行。请选择同一游戏的 .z5 或普通 .zblorb 版本。',
+      loadHint: '播放器可打开 .z3–.z8、.zblorb、.gblorb、.blorb、.ulx。如果游戏没有启动，请换一个文件。',
+      confirmRestart: '重新加载页面并再次选择游戏文件？',
+      pickerSaveTitle: '载入存档', pickerFileTitle: '选择文件',
+      pickerSaveText: '从手机中选择 .sav 文件', pickerFileText: '从手机中选择文件',
+      pickerPick: '选择文件', pickerCancel: '取消',
+      pickerSaveWriteTitle: '保存游戏',
+      pickerSaveWritePlaceholder: '存档名称',
+      pickerSave: '保存',
+      pickerOverwrite: '覆盖',
+      pickerOverwriteText: '文件「{name}」已存在。要覆盖吗？',
+      pickerFileWriteTitle: '保存：{kind}',
+      pickerFileReadTitle: '选择：{kind}',
+      pickerKindTranscript: '记录',
+      pickerKindData: '数据',
+      pickerKindCommand: '命令',
+      pickerNoFiles: '还没有文件',
+      exitTitle: '应用',
+      diagTitle: '诊断',
+      diagNote: '仅在开启时记录日志。「导出日志」会保存到「下载」。',
+      diagStart: '开始记录', diagStop: '停止记录', diagSave: '导出日志',
+      diagEmpty: '日志还是空的', diagSaved: '日志已保存：{path}', diagSaveFail: '无法保存日志',
+      exitNote: '完全关闭播放器。游戏进度单独保存在存档里。',
+      exitApp: '退出应用',
+      orientation: '屏幕方向', orientationNote: '屏幕怎么拿。自动 — 跟随手机旋转。',
+      orientationAuto: '自动', orientationPortrait: '仅竖屏', orientationLandscape: '仅横屏',
+    },
   };
 
   function t(key, vars) {
@@ -1283,6 +1664,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       if (cc) cc.title = t('close');
     }
     updateLangButton();
+    syncTabs();
   }
 
   /* ---------------------------------------------------------------
@@ -1290,10 +1672,14 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
      --------------------------------------------------------------- */
 
   var CFG_KEY = 'tq.ui.v2';
+  var UI_LANGS = ['ru', 'en', 'ja', 'zh'];
   var DEFAULT_UI_LANG = (function () {
     try {
       var l = (navigator.language || navigator.userLanguage || '').toLowerCase();
-      return l.indexOf('ru') === 0 ? 'ru' : 'en';
+      if (l.indexOf('ru') === 0) return 'ru';
+      if (l.indexOf('ja') === 0) return 'ja';
+      if (l.indexOf('zh') === 0) return 'zh';
+      return 'en';
     } catch (e) { return 'en'; }
   })();
 
@@ -1448,7 +1834,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
 
   var DEFAULTS = {
     uiLang: DEFAULT_UI_LANG,
-    target: DEFAULT_UI_LANG === 'ru' ? 'ru' : 'en',
+    target: DEFAULT_UI_LANG === 'ru' ? 'ru' : (DEFAULT_UI_LANG === 'ja' ? 'ja' : (DEFAULT_UI_LANG === 'zh' ? 'zh-CN' : 'en')),
     size: 'large',
     arrows: true,
     collapsed: false,
@@ -1549,7 +1935,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       try {
         var p = JSON.parse(raw);
         if (p && typeof p === 'object') {
-          if (p.uiLang === 'ru' || p.uiLang === 'en') c.uiLang = p.uiLang;
+          if (UI_LANGS.indexOf(p.uiLang) >= 0) c.uiLang = p.uiLang;
           if (TARGETS.indexOf(p.target) >= 0) c.target = p.target;
           if (p.size === 'large' || p.size === 'compact') c.size = p.size;
           if (typeof p.arrows === 'boolean') c.arrows = p.arrows;
@@ -1570,7 +1956,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
         }
       } catch (e) {}
     }
-    if (c.uiLang !== 'ru' && c.uiLang !== 'en') c.uiLang = 'en';
+    if (UI_LANGS.indexOf(c.uiLang) < 0) c.uiLang = DEFAULTS.uiLang;
     if (TARGETS.indexOf(c.target) < 0) c.target = 'ru';
     if (c.size !== 'large' && c.size !== 'compact') c.size = DEFAULTS.size;
     if (typeof c.arrows !== 'boolean') c.arrows = DEFAULTS.arrows;
@@ -2239,6 +2625,26 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     try { return JSON.parse(window.AndroidBridge.listGamesData() || '[]'); } catch (e) { return []; }
   }
 
+  /* Языки для ручного выбора языка игры в карточке. «Авто» — пустой код. */
+  var GAME_LANGS = [
+    ['en', 'English'], ['ru', 'Русский'], ['uk', 'Українська'], ['de', 'Deutsch'],
+    ['fr', 'Français'], ['es', 'Español'], ['it', 'Italiano'], ['pt', 'Português'],
+    ['pl', 'Polski'], ['tr', 'Türkçe'], ['nl', 'Nederlands'], ['cs', 'Čeština'],
+    ['sv', 'Svenska'], ['no', 'Norsk'], ['da', 'Dansk'], ['fi', 'Suomi'],
+    ['zh-CN', '中文'], ['ja', '日本語'], ['ko', '한국어'], ['ar', 'العربية'],
+    ['he', 'עברית'], ['el', 'Ελληνικά'], ['hi', 'हिन्दी']
+  ];
+
+  function gameLangOptions(cur) {
+    var html = '<option value="">' + escapeHtml(t('gameLangAuto')) + '</option>';
+    for (var i = 0; i < GAME_LANGS.length; i++) {
+      var c = GAME_LANGS[i][0];
+      html += '<option value="' + c + '"' + (c === cur ? ' selected' : '') + '>' +
+        escapeHtml(GAME_LANGS[i][1]) + '</option>';
+    }
+    return html;
+  }
+
   function renderGamesData() {
     var box = $('tq-games-list');
     if (!box) return;
@@ -2256,8 +2662,17 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
         } catch (e) {}
       }
       html += '<div class="tq-game-row" data-gid="' + escapeHtml(g.gameId) + '">' +
+        '<button type="button" class="tq-game-del" data-act="delete" title="' +
+          escapeHtml(t('gamesDeleteGame')) + '" aria-label="' +
+          escapeHtml(t('gamesDeleteGame')) + '">\u00d7</button>' +
         '<div class="tq-game-name">' + escapeHtml(g.name || gameDisplayName(g)) + '</div>' +
-        '<div class="tq-game-meta">' + formatSize(g.size) + (when ? ' · ' + escapeHtml(when) : '') + '</div>' +
+        '<div class="tq-game-meta">' +
+          '<span class="tq-game-sub">' + formatSize(g.size) + (when ? ' · ' + escapeHtml(when) : '') + '</span>' +
+          '<span class="tq-game-langlabel" data-tq="gameLangLabel">' + escapeHtml(t('gameLangLabel')) + '</span>' +
+          '<select class="tq-game-lang" data-gid="' + escapeHtml(g.gameId) + '" title="' +
+            escapeHtml(t('gameLang')) + '" aria-label="' + escapeHtml(t('gameLang')) + '">' +
+            gameLangOptions(gameMetaFor(g.gameId).lang || '') + '</select>' +
+        '</div>' +
         '<div class="tq-btns">' +
           '<button type="button" data-act="rename">' + t('gamesRename') + '</button>' +
           '<button type="button" data-act="saves">' + t('gamesDeleteSaves') + '</button>' +
@@ -2265,10 +2680,36 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
           '<button type="button" data-act="export">' + t('gamesExport') + '</button>' +
         '</div></div>';
     }
-    if (!list.length) html = '<div class="tq-note">' + t('gamesEmpty') + '</div>';
+    if (!list.length) html = '<div class="tq-empty">' + escapeHtml(t('gamesEmpty')) + '</div>';
     box.innerHTML = html;
     var tot = $('tq-games-total-note');
     if (tot) tot.textContent = t('gamesTotal', { size: formatSize(total) });
+  }
+
+  /* Ручной язык игры: пишем в meta.json и, если игра открыта сейчас,
+     сразу пересобираем пару «перевод → игра» с выбранным языком. */
+  function applyGameLang(gid, lang) {
+    var meta = gameMetaFor(gid);
+    meta.lang = lang || '';
+    try { window.AndroidBridge.writeAux(gid, 'meta.json', b64FromUtf8(JSON.stringify(meta))); } catch (e) {}
+    if (gid !== window.__tqGameId) return;
+    gameMetaCache = null;
+    gameLangOverride = lang || '';
+    gameLangManual = !!gameLangOverride;
+    gameLang = gameLangOverride;
+    tqLog('game lang ' + (gameLangOverride || 'auto') + ' by hand');
+    if (!dictGameOn) return;
+    dictFlushPair();
+    gameLang = '';
+    dictProbeLang(function () { dictBegin(); if (TR_ON) scheduleScan(); });
+  }
+
+  function onGamesLangChange(ev) {
+    var sel = ev.target && ev.target.closest ? ev.target.closest('select.tq-game-lang') : null;
+    if (!sel) return;
+    var gid = sel.getAttribute('data-gid') || '';
+    if (!gid) return;
+    applyGameLang(gid, sel.value);
   }
 
   function renameGameModal(gameId, current, done) {
@@ -2310,7 +2751,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
   function gameMetaFor(gid) {
     var raw = null;
     try { raw = window.AndroidBridge.readAux(gid, 'meta.json'); } catch (e) {}
-    var m = { gameId: gid, customName: '', originalFilename: '', title: '', lastUsed: 0 };
+    var m = { gameId: gid, customName: '', originalFilename: '', title: '', lastUsed: 0, lang: '' };
     if (raw) {
       try {
         var p = JSON.parse(raw);
@@ -2319,6 +2760,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
           m.originalFilename = p.originalFilename || '';
           m.title = p.title || '';
           m.lastUsed = p.lastUsed || 0;
+          m.lang = typeof p.lang === 'string' ? p.lang : '';
         }
       } catch (e) {}
     }
@@ -2336,6 +2778,16 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     var meta = gameMetaFor(gid);
     var name = gameDisplayName(meta);
 
+    if (act === 'delete') {
+      if (!confirm(t('gamesDeleteGameConfirm', { name: name }))) return;
+      var gone = false;
+      try { gone = !!window.AndroidBridge.deleteGame(gid); } catch (e) {}
+      if (!gone) { toast(t('gamesDeleteGameFail')); return; }
+      if (gid === window.__tqGameId) gameMetaCache = null;
+      toast(t('gamesDeleteGameDone', { name: name }));
+      renderGamesData();
+      return;
+    }
     if (act === 'rename') {
       renameGameModal(gid, meta.customName || '', function () {
         if (gid === window.__tqGameId) gameMetaCache = null;
@@ -2473,6 +2925,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     if (eg) eg.hidden = !hasNativeExit();
     var gg = $('tq-games-group');
     if (gg) gg.hidden = !hasNativeGames();
+    syncTabs();
     if (hasNativeGames()) renderSyncFolder();
     var sg = $('tq-saves-group');
     if (sg) sg.hidden = hasNativeGames();
@@ -2587,6 +3040,37 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
   }
 
 
+  /* Вкладки бокового меню: «Опции» — все настройки, «Данные игр» — карточки. */
+  var PANEL_TAB = 'opts';
+
+  function panelTabTitle(tab) {
+    if (!hasNativeGames()) return t('panelTitle');
+    return tab === 'games' ? t('tabGames') : t('tabOptions');
+  }
+
+  function setPanelTab(tab) {
+    if (tab !== 'games' || !hasNativeGames()) tab = 'opts';
+    PANEL_TAB = tab;
+    var btns = document.querySelectorAll('#tq-panel .tq-tab');
+    for (var i = 0; i < btns.length; i++) {
+      var on = btns[i].getAttribute('data-tab') === tab;
+      btns[i].classList.toggle('tq-tab-on', on);
+      btns[i].setAttribute('aria-selected', on ? 'true' : 'false');
+    }
+    var panes = document.querySelectorAll('#tq-panel .tq-tabpane');
+    for (var j = 0; j < panes.length; j++) {
+      panes[j].hidden = panes[j].getAttribute('data-pane') !== tab;
+    }
+    var title = $('tq-panel-title');
+    if (title) title.textContent = panelTabTitle(tab);
+  }
+
+  function syncTabs() {
+    var bar = $('tq-tabs');
+    if (bar) bar.hidden = !hasNativeGames();
+    setPanelTab(PANEL_TAB);
+  }
+
   function openPanel(open) {
     var show = (open === undefined) ? !document.body.classList.contains('tq-panel-open') : !!open;
     tqLog('panel ' + (show ? 'open' : 'close'));
@@ -2671,6 +3155,16 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     return ['en', 'de', 'fr', 'es', 'it', 'pt', 'pl', 'tr', 'nl', 'cs'].indexOf(cfg.target) >= 0;
   }
 
+  /* Пара «латиница → латиница» (шведская игра, читаемая по-английски).
+     Такую игру переводим только когда её язык уже определён и отличается
+     от языка перевода: иначе английская игра в английском режиме отдавала
+     бы каждую строку переводчику и возвращала её же. */
+  function latinPairTranslate() {
+    var gl = gameLang || '';
+    if (!gl) return cfg.target !== 'en';
+    return gl !== cfg.target;
+  }
+
   function shouldTranslate(txt) {
     if (!txt) return false;
     if (txt.length < 8) return false;
@@ -2679,10 +3173,11 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     if (!hasLetters(txt)) return false;
     if (/^\(\s*(yes|no|y\/n)\s*[\/,]\s*(yes|no|y\/n)\s*\)$/i.test(txt)) return false;
 
-    if (cfg.target === 'en') {
-      /* English target: leave plain English alone, translate other scripts. */
-      return !hasLatin(txt) || hasCyr(txt) || hasGreek(txt) || hasArabic(txt) ||
-             hasHebrew(txt) || hasDevanagari(txt) || hasHan(txt) || hasKana(txt) || hasHangul(txt);
+    if (isLatinTarget()) {
+      if (latinPairTranslate()) return true;
+      /* Язык игры совпадает с языком перевода: трогаем только чужую
+         письменность (кириллицу, иероглифы и т. п.). */
+      return !hasLatin(txt);
     }
     /* Non-English target: need Latin source text to be worth a request. */
     return hasLatin(txt);
@@ -2983,6 +3478,9 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
           retryTranslate(el);
           return;
         }
+        /* Латиница в латиницу: ответ, совпавший с исходником (имя
+           собственное, название), переводом не считаем. */
+        if (isLatinTarget() && latinPairTranslate() && clean(out) === clean(tagged.text)) return;
         dropRec(el);
         var rec = { el: el, links: tagged.links, tr: out, en: tagged.text, on: true };
         records.push(rec);
@@ -2997,6 +3495,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
             processed.delete(old.el);
           }
         }
+        tqHarvest(tagged.text);
         el.dataset.tqText = clean(out.replace(MARK, '$2'));
         el.classList.add('tq-line');
         if (TR_ON) {
@@ -3019,6 +3518,135 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     records = keep;
   }
 
+  /* ---------------- шапка и статусная строка (сеточное окно) ----------------
+
+     Верхнее окно движка (статус, меню «Om detta spel») — .GridWindow из
+     .GridLine; колонки в нём держатся пробелами. Переводим каждую колонку
+     отдельно и добиваем её пробелами до прежней ширины, чтобы сетка не
+     разъехалась. Слова из шапки уходят в словарь команд, как и слова
+     основного текста. */
+
+  var gridSeen = new WeakMap();
+
+  function spaces(n) {
+    return n > 0 ? new Array(n + 1).join(' ') : '';
+  }
+
+  function gridRuns(line) {
+    var runs = [], re = /(\s{2,})/g, last = 0, m;
+    while ((m = re.exec(line)) !== null) {
+      runs.push({ t: line.slice(last, m.index), sep: m[1] });
+      last = re.lastIndex;
+    }
+    runs.push({ t: line.slice(last), sep: '' });
+    return runs;
+  }
+
+  /* Показать строку сетки: перевод или исходник — по переключателю. */
+  function gridShow(el, state) {
+    var txt = TR_ON ? state.tr : state.src;
+    state.dom = txt;
+    el.__tqRaw = state.src;
+    el.__tqTr = state.tr;
+    el.textContent = txt;
+  }
+
+  function gridBuild(runs) {
+    var out = '';
+    for (var i = 0; i < runs.length; i++) {
+      var r = runs[i];
+      var body = r.out || r.body;
+      var lead = r.lead, trail = r.trail;
+      var pad = r.body.length - body.length;
+      /* Одинаковые отступы слева и справа — центрированная подпись:
+         держим её по центру, а не прижимаем к левому краю. */
+      if (pad > 0 && lead.length >= 3 && trail.length >= 3 &&
+          Math.abs(lead.length - trail.length) <= 3) {
+        var left = Math.floor(pad / 2);
+        lead = lead + spaces(left);
+        pad -= left;
+      }
+      if (pad > 0) trail = trail + spaces(pad);
+      out += lead + body + trail + r.sep;
+    }
+    return out;
+  }
+
+  function gridLine(el) {
+    if (el.querySelector && el.querySelector('a')) return;
+    var raw = el.textContent;
+    if (!raw || !/\S/.test(raw)) return;
+    var state = gridSeen.get(el);
+    if (state) {
+      if (raw === state.dom) return;          /* это наш собственный вывод */
+      if (raw === state.src) {                /* движок перерисовал тот же текст */
+        if (state.tr != null) gridShow(el, state);
+        return;
+      }
+    }
+    state = { src: raw, tr: null, dom: raw };
+    gridSeen.set(el, state);
+    /* Слова шапки — такие же слова игры: словарь команд их ждёт. Имена
+       клавиш (RETURN, X) словами не считаем. */
+    tqHarvest(raw.replace(/\b[A-Z]{2,}\b/g, ' '));
+    var runs = gridRuns(raw), todo = [];
+    for (var i = 0; i < runs.length; i++) {
+      var r = runs[i];
+      var lead = r.t.match(/^\s*/)[0], trail = r.t.match(/\s*$/)[0];
+      r.lead = lead;
+      r.trail = trail;
+      r.body = r.t.slice(lead.length, r.t.length - trail.length);
+      r.out = r.body;
+      if (r.body.length < 2 || !hasLetters(r.body)) continue;
+      if (targetScript(r.body) && !isLatinTarget()) continue;
+      todo.push(i);
+    }
+    if (!todo.length) return;
+    var left = todo.length;
+    for (var k = 0; k < todo.length; k++) (function (idx) {
+      var run = runs[idx];
+      var fin = function () {
+        left--;
+        if (left > 0) return;
+        if (!el.isConnected) { gridSeen.delete(el); return; }
+        state.tr = gridBuild(runs);
+        /* Пока перевод ехал, движок мог переписать строку: тогда её
+           возьмёт следующий проход сканера. */
+        if (el.textContent !== raw) return;
+        gridShow(el, state);
+      };
+      tr(run.body).then(function (txt) {
+        txt = clean(txt);
+        if (txt && ((isLatinTarget() && hasLatin(txt)) || targetScript(txt))) run.out = txt;
+        fin();
+      }).catch(fin);
+    })(todo[k]);
+  }
+
+  function gridScan() {
+    var grids = document.querySelectorAll('.GridWindow');
+    for (var g = 0; g < grids.length; g++) {
+      var lines = grids[g].querySelectorAll('.GridLine');
+      for (var i = 0; i < lines.length; i++) gridLine(lines[i]);
+    }
+  }
+
+  /* Переключатель перевода должен вернуть и шапке исходный язык. */
+  function gridSwap(on) {
+    var grids = document.querySelectorAll('.GridWindow');
+    for (var g = 0; g < grids.length; g++) {
+      var lines = grids[g].querySelectorAll('.GridLine');
+      for (var i = 0; i < lines.length; i++) {
+        var el = lines[i];
+        if (el.__tqRaw == null || el.__tqTr == null) continue;
+        var st = gridSeen.get(el);
+        var txt = on ? el.__tqTr : el.__tqRaw;
+        if (st) st.dom = txt;
+        el.textContent = txt;
+      }
+    }
+  }
+
   function scan() {
     if (document.hidden) return;
     pruneRecords();
@@ -3038,6 +3666,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
         translateEl(el, tagged);
       }
     }
+    gridScan();
   }
 
   function scheduleScan() {
@@ -3068,6 +3697,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
   function applyLang(on) {
     TR_ON = on;
     updateLangButton();
+    gridSwap(on);
     for (var i = 0; i < records.length; i++) {
       var rec = records[i];
       if (!rec.el.isConnected) continue;
@@ -3078,9 +3708,14 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
   }
 
   function applyTarget(lang) {
+    var pairChanged = lang !== cfg.target;
+    /* Словарь привязан к паре «перевод → игра»: сначала сохраняем
+       накопленное под прежней парой, потом начинаем новую. */
+    if (pairChanged) dictFlushPair();
     cfg.target = lang;
     saveCfg();
     queue.length = 0;
+    gridSeen = new WeakMap();
     for (var i = 0; i < records.length; i++) {
       var rec = records[i];
       if (!rec.el.isConnected) continue;
@@ -3092,7 +3727,1081 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     }
     records = [];
     updateLangButton();
+    if (pairChanged) dictRestartPair();
     if (TR_ON) scheduleScan();
+  }
+
+  /* ---------------------------------------------------------------
+     Словарь игры: обратный перевод команд
+
+     Перевод описаний и словарь — разные данные и разные очереди.
+     Слова, встреченные в тексте игры, уходят в собственный запрос
+     (клиентский эндпоинт принимает пачку слов за раз), ответ молча
+     ложится в словарь этой игры: игрок ничего не ждёт и не видит.
+
+     Пара языков собирается из пресета. Пресет — английский базисный
+     список IF-слов; его сторона переводится отдельно на язык игры и
+     на язык игрока, полученные пары кладутся в словарь первыми
+     записями. Так «игра на языке X, читаю на языке Y» работает без
+     ручной подготовки, а изученное по ходу игры перекрывает пресет.
+     --------------------------------------------------------------- */
+
+  var DICT_MAXPAR = 3;          /* своих запросов: перевод текста не трогаем */
+  var DICT_MAX_WORDS = 6000;    /* сколько слов игры заказывать за сессию */
+  var DICT_MAX_SENSES = 6;      /* вариантов значения на слово */
+  var DICT_IDB_PREFIX = 'dict|';
+  var DICT_PRESET_KEY = 'tq.preset.';
+
+  var dictQ = [];
+  var dictActive = 0;
+  var dictAsked = Object.create(null);
+  var dictCount = 0;
+  var gdict = null;             /* {gid, lang, pair, words, stem, rev} */
+  var gdictTimer = null;
+  var gameLang = '';
+  /* Язык игры, выбранный руками в настройках: сильнее детектора. */
+  var gameLangOverride = '';
+  var gameLangManual = false;
+  var langTries = 0;
+  var presetCache = Object.create(null);
+  var presetAsked = Object.create(null);
+
+  /* Базисный список: «английское слово|ручное значение». Английская
+     сторона — ключ пресета, она же слово для игры на английском. */
+  var PRESET_TEXT =
+    'open открыть|close закрыть|look осмотреться|examine осмотреть|read читать|' +
+    'take взять|get взять|drop бросить|throw кинуть|put положить|' +
+    'wear надеть|remove снять|eat есть|drink пить|give дать|show показать|' +
+    'push толкнуть|pull тянуть|turn повернуть|press нажать|search искать|' +
+    'listen слушать|smell нюхать|touch трогать|climb взобраться|jump прыгнуть|' +
+    'fill наполнить|empty опустошить|lock запереть|unlock отпереть|' +
+    'attack атаковать|kill убить|talk говорить|ask спросить|tell сказать|say сказать|' +
+    'think думать|sleep спать|light зажечь|extinguish погасить|dig копать|cut резать|' +
+    'tie привязать|untie отвязать|go идти|walk идти|run бежать|enter войти|leave выйти|' +
+    'north север|south юг|east восток|west запад|up вверх|down вниз|' +
+    'inventory инвентарь|wait ждать|yes да|no нет|again ещё|undo отменить|' +
+    'restart перезапустить|save сохранить|restore восстановить|quit выйти|' +
+    'score счёт|help помощь|hint подсказка|' +
+    'in в|out из|on на|off с|under под|behind за|with с|without без|to к|from из|' +
+    'at у|inside внутри|outside снаружи|about о|all всё|my мой|this это|that тот';
+
+  var PRESET = null;
+  var PRESET_MAP = null;
+
+  function presetList() {
+    if (PRESET) return PRESET;
+    PRESET = [];
+    PRESET_MAP = Object.create(null);
+    var parts = PRESET_TEXT.split('|');
+    for (var i = 0; i < parts.length; i++) {
+      var sp = parts[i].indexOf(' ');
+      if (sp < 1) continue;
+      var row = [parts[i].slice(0, sp), parts[i].slice(sp + 1)];
+      PRESET.push(row);
+      PRESET_MAP[row[0]] = row[1];
+    }
+    return PRESET;
+  }
+
+  /* Слова служебные для фраз, мусорные для словаря команд. */
+  var DICT_STOP = {
+    the: 1, a: 1, an: 1, of: 1, to: 1, and: 1, or: 1, is: 1, are: 1, was: 1, were: 1,
+    be: 1, been: 1, it: 1, its: 1, you: 1, your: 1, he: 1, she: 1, they: 1, them: 1,
+    his: 1, her: 1, their: 1, this: 1, that: 1, these: 1, those: 1, with: 1, for: 1,
+    on: 1, in: 1, at: 1, by: 1, as: 1, not: 1, no: 1, if: 1, but: 1, from: 1,
+    there: 1, here: 1, which: 1, who: 1, what: 1, when: 1, where: 1, all: 1, any: 1,
+    can: 1, will: 1, would: 1, do: 1, does: 1, did: 1, have: 1, has: 1, had: 1,
+    so: 1, up: 1, out: 1, about: 1, into: 1, over: 1, than: 1, then: 1, also: 1,
+    very: 1, more: 1, some: 1, just: 1, only: 1, now: 1, too: 1, one: 1, two: 1
+  };
+
+  /* Служебные слова языка игрока: их словарь не выучит, а в команде
+     они нужны. Пока готова русская колонка; остальные закрывает
+     пресет и выученное. */
+  var DICT_GRAMMAR_RU = {
+    'в': 'in', 'во': 'in', 'на': 'on', 'с': 'with', 'со': 'with', 'под': 'under',
+    'над': 'over', 'за': 'behind', 'к': 'to', 'ко': 'to', 'из': 'from', 'от': 'from',
+    'для': 'for', 'по': 'on', 'о': 'about', 'об': 'about', 'и': 'and', 'а': 'and',
+    'или': 'or', 'не': 'not', 'это': 'this', 'тот': 'that', 'все': 'all', 'всё': 'all',
+    'мой': 'my', 'мою': 'my', 'мои': 'my', 'его': 'its', 'её': 'its', 'ее': 'its',
+    'их': 'their'
+  };
+
+  var DICT_EDGE = /^[^0-9a-z\u00c0-\u024f\u0400-\u04ff\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]+|[^0-9a-z\u00c0-\u024f\u0400-\u04ff\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]+$/g;
+  var DICT_ENDINGS = ['ами', 'ями', 'ими', 'ого', 'его', 'ому', 'ему', 'ыми', 'ах', 'ях',
+    'ов', 'ев', 'ей', 'ой', 'ый', 'ий', 'ая', 'яя', 'ое', 'ее', 'ые', 'ие', 'ам', 'ям',
+    'ом', 'ем', 'ую', 'юю', 'ия', 'ии', 'ы', 'и', 'а', 'я', 'о', 'е', 'у', 'ю', 'ь', 'й'];
+
+  function dictKey(w) {
+    return String(w == null ? '' : w).toLowerCase().replace(/ё/g, 'е').replace(DICT_EDGE, '');
+  }
+
+  function dictStem(w) {
+    for (var i = 0; i < DICT_ENDINGS.length; i++) {
+      var e = DICT_ENDINGS[i];
+      if (w.length - e.length >= 3 && w.slice(w.length - e.length) === e) return w.slice(0, w.length - e.length);
+    }
+    return w;
+  }
+
+  function dictNew() {
+    return {
+      gid: '', lang: '', pair: '', n: 0,
+      words: Object.create(null), stem: Object.create(null),
+      rev: Object.create(null), vocab: Object.create(null)
+    };
+  }
+
+  function dictAdd(userWord, gameWord, conf, src) {
+    if (!gdict) return false;
+    var u = dictKey(userWord), g = dictKey(gameWord);
+    if (!u || !g || u === g) return false;
+    var list = gdict.words[u];
+    if (!list) { list = gdict.words[u] = []; gdict.n++; }
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].g === g) {
+        if (conf > list[i].c) { list[i].c = conf; list[i].s = src || list[i].s; dictDirty(); }
+        return false;
+      }
+    }
+    list.push({ g: g, c: conf, s: src || '' });
+    list.sort(function (a, b) { return b.c - a.c; });
+    if (list.length > DICT_MAX_SENSES) list.length = DICT_MAX_SENSES;
+    var st = dictStem(u);
+    if (!gdict.stem[st]) gdict.stem[st] = [];
+    if (gdict.stem[st].indexOf(u) < 0) gdict.stem[st].push(u);
+    dictDirty();
+    return true;
+  }
+
+  function dictRebuildStems() {
+    if (!gdict) return;
+    gdict.stem = Object.create(null);
+    for (var u in gdict.words) {
+      if (!Object.prototype.hasOwnProperty.call(gdict.words, u)) continue;
+      var st = dictStem(u);
+      if (!gdict.stem[st]) gdict.stem[st] = [];
+      gdict.stem[st].push(u);
+    }
+  }
+
+  function dictPairId() { return (cfg.target || 'ru') + '>' + (gameLang || 'en'); }
+
+  function dictId() {
+    return DICT_IDB_PREFIX + (window.__tqGameKey || window.__tqGameId || 'default') + '|' + dictPairId();
+  }
+
+  function dictDirty() {
+    if (gdictTimer) return;
+    gdictTimer = setTimeout(function () { gdictTimer = null; dictSave(); }, 2500);
+  }
+
+  function dictSave() {
+    if (!gdict || !idb) return;
+    try {
+      idbSet(idb, dictId(), JSON.stringify({
+        lang: gdict.lang, pair: gdict.pair, n: gdict.n,
+        words: gdict.words, rev: gdict.rev, vocab: gdict.vocab
+      }), 0).catch(function () {});
+    } catch (e) {}
+  }
+
+  function dictLoad() {
+    if (!gdict) return;
+    if (!idb) { setTimeout(dictLoad, 1500); return; }
+    var id = dictId();
+    idbGet(idb, id).then(function (raw) {
+      if (!gdict) return;
+      if (raw) {
+        try {
+          var d = JSON.parse(raw);
+          if (d && d.words && d.pair === gdict.pair) {
+            gdict.words = d.words;
+            gdict.rev = d.rev || Object.create(null);
+            gdict.vocab = d.vocab || Object.create(null);
+            gdict.n = d.n || 0;
+            dictRebuildStems();
+          }
+        } catch (e) {}
+      }
+      dictSeed();
+    }).catch(function () { dictSeed(); });
+  }
+
+  /* Текст игры для определения её языка. Берём ИСХОДНИК: перевод, которым
+     мы сами заменили строку, — это уже язык перевода, и по нему детектор
+     решает, что игра написана на языке игрока (пара «ru>ru», словарь команд
+     выключен). Эхо набранных команд («>осмотреться») — тоже не язык игры. */
+  function dictGameText() {
+    var out = '', frames = document.querySelectorAll('.BufferWindow');
+    for (var i = 0; i < frames.length; i++) {
+      var kids = frames[i].children;
+      for (var j = 0; j < kids.length; j++) {
+        var el = kids[j];
+        if (el.nodeType !== 1) continue;
+        var src = dictSourceText(el);
+        if (!src || /^>/.test(src)) continue;
+        out += ' ' + src;
+      }
+    }
+    return clean(out);
+  }
+
+  /* Исходная строка узла: перевод лежит в records, у шапки — в __tqRaw.
+     Если запись уже выпала из records, исходника нет — строку пропускаем,
+     иначе сэмпл снова окажется на языке перевода. */
+  function dictSourceText(el) {
+    var rec = recByEl.get(el);
+    if (rec && rec.en) return rec.en.replace(MARK, '$2');
+    if (el.__tqRaw != null) return String(el.__tqRaw);
+    if (el.classList && el.classList.contains('tq-line')) return '';
+    return el.textContent || '';
+  }
+
+  /* Письменность языка: по ней проверяем ответ детектора. */
+  var LANG_SCRIPT = {
+    ru: 'cyr', uk: 'cyr', be: 'cyr', bg: 'cyr', sr: 'cyr', mk: 'cyr', kk: 'cyr',
+    ja: 'kana', 'zh-CN': 'han', zh: 'han', ko: 'hangul',
+    ar: 'arab', fa: 'arab', he: 'hebr', el: 'greek', hi: 'deva', mr: 'deva', ne: 'deva'
+  };
+  var SCRIPT_RE = {
+    cyr: /[\u0400-\u04ff]/g,
+    kana: /[\u3040-\u30ff]/g,
+    han: /[\u3400-\u9fff]/g,
+    hangul: /[\uac00-\ud7af\u1100-\u11ff]/g,
+    arab: /[\u0600-\u06ff\u0750-\u077f]/g,
+    hebr: /[\u0590-\u05ff]/g,
+    greek: /[\u0370-\u03ff]/g,
+    deva: /[\u0900-\u097f]/g,
+    latin: /[A-Za-z\u00c0-\u024f]/g
+  };
+
+  function langScript(lang) { return LANG_SCRIPT[String(lang || '')] || 'latin'; }
+
+  function scriptCount(name, s) {
+    var m = String(s || '').match(SCRIPT_RE[name]);
+    return m ? m.length : 0;
+  }
+
+  /* Письменность, которой в тексте действительно больше всего. */
+  function dominantScript(s) {
+    var best = '', n = 0;
+    for (var k in SCRIPT_RE) {
+      if (!Object.prototype.hasOwnProperty.call(SCRIPT_RE, k)) continue;
+      var c = scriptCount(k, s);
+      if (c > n) { n = c; best = k; }
+    }
+    return n >= 12 ? best : '';
+  }
+
+  function scriptLang(name) {
+    if (name === 'cyr') return 'ru';
+    if (name === 'kana') return 'ja';
+    if (name === 'han') return 'zh-CN';
+    if (name === 'hangul') return 'ko';
+    if (name === 'arab') return 'ar';
+    if (name === 'hebr') return 'he';
+    if (name === 'greek') return 'el';
+    if (name === 'deva') return 'hi';
+    return 'en';
+  }
+
+  /* Язык игры узнаём у переводчика по первым строкам: sl=auto отдаёт
+     определённый исходный язык в третьем поле ответа. */
+  function dictProbeLang(done) {
+    var txt = dictGameText();
+    var fin = function () { if (typeof done === 'function') { done(); done = null; } };
+    /* Язык выбран руками — детектор не спрашиваем и в сеть не идём. */
+    if (gameLangManual) {
+      if (gameLangOverride) gameLang = gameLangOverride;
+      tqLog('dict lang ' + (gameLang || 'auto') + ' (manual)');
+      if (gameLang) scheduleScan();
+      fin();
+      return;
+    }
+    if (!netOnline) { gameLang = 'en'; fin(); return; }
+    if (txt.length < 40) {
+      if (langTries++ < 20) { setTimeout(function () { dictProbeLang(done); }, 1500); return; }
+      gameLang = 'en'; fin(); return;
+    }
+    var u = 'https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=auto&tl=en&q=' +
+      encodeURIComponent(txt.slice(0, 300));
+    fetch(u).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      var c = '';
+      try { c = String(j[0][1] || '').toLowerCase().split('-')[0]; } catch (e) {}
+      gameLang = /^[a-z]{2,3}$/.test(c) ? c : 'en';
+      if (gameLang === 'zh') gameLang = 'zh-CN';
+      if (gameLang === 'nb' || gameLang === 'nn') gameLang = 'no';
+      /* Детектор ошибается на коротком и смешанном тексте. Если язык,
+         который он назвал, написан не той письменностью, что сам текст,
+         верим тексту: иначе английская игра становится «ru>ru» и отключает
+         и перевод описаний, и словарь команд. */
+      var dom = dominantScript(txt);
+      if (dom && langScript(gameLang) !== dom) gameLang = scriptLang(dom);
+      tqLog('dict lang ' + gameLang + ' script=' + (dom || '-'));
+      /* Язык узнали позже первых строк: строки, отброшенные как «уже на
+         языке перевода», надо перевести теперь. */
+      scheduleScan();
+      fin();
+    }).catch(function () { gameLang = 'en'; fin(); });
+  }
+
+  var dictGameOn = false;
+
+  function dictBegin() {
+    if (gdict) return;
+    gdict = dictNew();
+    gdict.gid = window.__tqGameKey || window.__tqGameId || 'default';
+    gdict.lang = gameLang;
+    gdict.pair = dictPairId();
+    /* Пресет кладём сразу, не дожидаясь IndexedDB: иначе первые
+       команды уходят в игру непереведёнными. */
+    dictSeed();
+    dictLoad();
+  }
+
+  function tqDictStart() {
+    dictGameOn = true;
+    if (gdict) return;
+    if (gameLang) { dictBegin(); return; }
+    dictProbeLang(function () { dictBegin(); });
+  }
+
+  /* Сменили язык перевода — сменилась пара «перевод → игра», а значит
+     и словарь. Старый сохраняем под прежней парой и собираем новый:
+     иначе «look» в английском режиме ищется среди русских ключей и
+     команда уходит в игру как есть. */
+  function dictFlushPair() {
+    if (!dictGameOn) return;
+    if (gdict) dictSave();
+    gdict = null;
+    if (gdictTimer) { clearTimeout(gdictTimer); gdictTimer = null; }
+    dictAsked = Object.create(null);
+    dictCount = 0;
+    presetAsked = Object.create(null);
+  }
+
+  function dictRestartPair() {
+    if (!dictGameOn) return;
+    if (gameLang) { dictBegin(); return; }
+    dictProbeLang(function () { dictBegin(); });
+  }
+
+  /* ---------------- фоновая очередь ---------------- */
+
+  function dictPush(job) {
+    if (!netOnline) return;
+    if (dictQ.length > 300) return;   /* фон: не копим бесконечно */
+    dictQ.push(job);
+    dictPump();
+  }
+
+  function dictPump() {
+    while (dictActive < DICT_MAXPAR && dictQ.length) {
+      var job = dictQ.shift();
+      dictActive++;
+      Promise.resolve().then(job).catch(function () {}).then(function () {
+        dictActive--;
+        dictPump();
+      });
+    }
+  }
+
+  /* Данные словаря идут через клиентский эндпоинт: он принимает несколько
+     q сразу и разрешает CORS, то есть работает и в APK, и в браузере.
+     Один запрос — до DICT_BATCH слов, ответ в том же порядке. */
+  var DICT_BATCH = 8;
+
+  function dictFlat(j) {
+    var out = [];
+    if (!j || !(j instanceof Array)) return out;
+    for (var i = 0; i < j.length; i++) {
+      var v = j[i];
+      if (typeof v === 'string') { out.push(v); continue; }
+      if (v instanceof Array && typeof v[0] === 'string') out.push(v[0]);
+    }
+    return out;
+  }
+
+  function dictReq(words, from, to) {
+    var q = '', n = 0;
+    for (var i = 0; i < words.length && n < DICT_BATCH; i++, n++) {
+      if (!words[i]) continue;
+      q += '&q=' + encodeURIComponent(words[i]);
+    }
+    if (!q) return Promise.resolve([]);
+    var u = 'https://clients5.google.com/translate_a/t?client=dict-chrome-ex' +
+      '&sl=' + encodeURIComponent(from || 'auto') + '&tl=' + encodeURIComponent(to || 'en') + q;
+    return fetch(u).then(function (r) { if (!r.ok) throw new Error('http'); return r.json(); })
+      .then(function (j) { return dictFlat(j); })
+      .catch(function () { return []; });
+  }
+
+  function dictSense(s) {
+    var v = String(s == null ? '' : s).split('(')[0].split(';')[0];
+    v = v.replace(/[[\]{}"']/g, ' ').split(',')[0];
+    v = clean(v);
+    if (!v || v.length > 30) return '';
+    if (v.split(/\s+/).length > 3) return '';
+    if (!hasLetters(v)) return '';
+    return v;
+  }
+
+  /* Второй переводчик отдаёт несколько кандидатов на слово — из них
+     берём только те, что реально есть в тексте этой игры. */
+  function dictMyMemory(word, from, to) {
+    var u = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(word) +
+      '&langpair=' + encodeURIComponent(from) + '|' + encodeURIComponent(to);
+    return fetch(u).then(function (r) { if (!r.ok) throw new Error('http'); return r.json(); })
+      .then(function (j) {
+        var out = [];
+        var m = j && j.matches;
+        if (m && m.length) {
+          for (var i = 0; i < m.length && out.length < 4; i++) {
+            var w = dictSense(m[i] && m[i].translation);
+            if (w && out.indexOf(w) < 0) out.push(w);
+          }
+        }
+        if (!out.length && j && j.responseData) {
+          var one = dictSense(j.responseData.translatedText);
+          if (one) out.push(one);
+        }
+        return out;
+      })
+      .catch(function () { return []; });
+  }
+
+  /* ---------------- пресет ---------------- */
+
+  function presetLoad(lang) {
+    if (presetCache[lang]) return presetCache[lang];
+    presetCache[lang] = Object.create(null);
+    try {
+      var raw = localStorage.getItem(DICT_PRESET_KEY + lang);
+      if (raw) {
+        var p = JSON.parse(raw);
+        if (p && typeof p === 'object') presetCache[lang] = p;
+      }
+    } catch (e) {}
+    return presetCache[lang];
+  }
+
+  function presetSave(lang) {
+    try { localStorage.setItem(DICT_PRESET_KEY + lang, JSON.stringify(presetCache[lang] || {})); } catch (e) {}
+  }
+
+  function presetWord(en, lang) {
+    if (!en || !lang) return '';
+    if (lang === 'en') return en;
+    if (lang === 'ru') return PRESET_MAP[en] || '';
+    var cache = presetLoad(lang);
+    return cache[en] || '';
+  }
+
+  /* Одно английское слово переводчик часто отдаёт существительным
+     («look» → «titt»), а игре нужен глагол («titta»). Для глагольных
+     слов пресета спрашиваем форму во фразе «I want to …» и берём
+     последнее слово, если оно того же корня, что и простое. */
+  var PRESET_NOTVERB = {
+    north: 1, south: 1, east: 1, west: 1, up: 1, down: 1,
+    inventory: 1, wait: 1, yes: 1, no: 1, again: 1, undo: 1,
+    restart: 1, save: 1, restore: 1, score: 1, help: 1, hint: 1,
+    'in': 1, out: 1, 'on': 1, off: 1, under: 1, behind: 1, with: 1,
+    without: 1, to: 1, from: 1, at: 1, inside: 1, outside: 1,
+    about: 1, all: 1, my: 1, 'this': 1, 'that': 1
+  };
+
+  var PRESET_VERB_KEY = 'tq.preset.verb.';
+  var presetVerbAsked = Object.create(null);
+  var presetVerbDone = Object.create(null);
+
+  function sameWordStem(a, b) {
+    if (!a || !b) return false;
+    if (a === b) return true;
+    var n = Math.min(a.length, b.length);
+    if (n < 4) return false;
+    if (a.slice(0, n) !== b.slice(0, n)) return false;
+    return Math.abs(a.length - b.length) <= 3;
+  }
+
+  function presetVerbLast(s) {
+    var m = String(s || '').toLowerCase()
+      .match(/[a-z\u00c0-\u024f\u0400-\u04ff]+(?:['-][a-z\u00c0-\u024f]+)*$/);
+    return m ? m[0] : '';
+  }
+
+  function presetVerbDoneSet(lang) {
+    presetVerbDone[lang] = 1;
+    try { localStorage.setItem(PRESET_VERB_KEY + lang, '1'); } catch (e) {}
+  }
+
+  function presetVerbPass(lang) {
+    if (!lang || lang === 'en' || lang === 'ru' || presetVerbDone[lang]) return;
+    try {
+      if (localStorage.getItem(PRESET_VERB_KEY + lang) === '1') { presetVerbDone[lang] = 1; return; }
+    } catch (e) {}
+    var list = presetList(), cache = presetLoad(lang), todo = [];
+    for (var i = 0; i < list.length; i++) {
+      var w = list[i][0];
+      if (PRESET_NOTVERB[w] || !cache[w]) continue;
+      var k = lang + '|' + w;
+      if (presetVerbAsked[k]) continue;
+      presetVerbAsked[k] = 1;
+      todo.push(w);
+    }
+    if (!todo.length) { presetVerbDoneSet(lang); return; }
+    for (var b = 0; b < todo.length; b += DICT_BATCH) {
+      presetVerbBatch(lang, todo.slice(b, b + DICT_BATCH));
+    }
+  }
+
+  function presetVerbBatch(lang, part) {
+    dictPush(function () {
+      var qs = [];
+      for (var i = 0; i < part.length; i++) qs.push('I want to ' + part[i]);
+      return dictReq(qs, 'en', lang).then(function (list) {
+        if (!gdict || !list || !list.length) return;
+        var cache = presetLoad(lang), got = false;
+        for (var i = 0; i < part.length; i++) {
+          var cand = presetVerbLast(list[i]);
+          var cur = cache[part[i]] || '';
+          if (!cand || !cur || cand === cur) continue;
+          if (!sameWordStem(cand, cur)) continue;
+          cache[part[i]] = cand;
+          got = true;
+        }
+        if (got) { presetSave(lang); dictSeed(); }
+        if (netOnline) presetVerbDoneSet(lang);
+      });
+    });
+  }
+
+  function presetFill(lang, words) {
+    if (!lang || lang === 'en' || lang === 'ru' || !words || !words.length) return;
+    var todo = [];
+    for (var i = 0; i < words.length; i++) {
+      var k = lang + '|' + words[i];
+      if (presetAsked[k]) continue;
+      presetAsked[k] = 1;
+      todo.push(words[i]);
+    }
+    for (var b = 0; b < todo.length; b += DICT_BATCH) {
+      presetBatch(lang, todo.slice(b, b + DICT_BATCH));
+    }
+  }
+
+  /* Пресет нужен сразу, а не к третьей команде: слова чужого языка
+     забираем пачками при старте и держим в localStorage. */
+  function presetBatch(lang, part) {
+    dictPush(function () {
+      return dictReq(part, 'en', lang).then(function (list) {
+        if (!gdict || !list || !list.length) return;
+        var cache = presetLoad(lang), got = false;
+        for (var i = 0; i < part.length; i++) {
+          var v = dictSense(list[i] || '');
+          if (!v) continue;
+          cache[part[i]] = v;
+          got = true;
+        }
+        if (!got) return;
+        presetSave(lang);
+        dictSeed();
+      });
+    });
+  }
+
+  /* Пресет кладётся первыми записями словаря: обе стороны пары
+     строятся из одного и того же английского ключа. */
+  function dictSeed() {
+    if (!gdict) return;
+    var user = cfg.target || 'ru';
+    var gl = gameLang || 'en';
+    if (user === gl) return;
+    var list = presetList();
+    var missUser = [], missGame = [];
+    for (var i = 0; i < list.length; i++) {
+      var u = presetWord(list[i][0], user);
+      var g = presetWord(list[i][0], gl);
+      if (u && g) dictAdd(u, g, 2, 'preset');
+      else if (!u) missUser.push(list[i][0]);
+      else if (!g) missGame.push(list[i][0]);
+    }
+    presetFill(user, missUser);
+    presetFill(gl, missGame);
+    presetVerbPass(gl);
+  }
+
+  /* ---------------- наполнение из текста игры ---------------- */
+
+  function tqHarvest(text) {
+    if (!gdict || !netOnline) return;
+    var from = gameLang || 'en', to = cfg.target || 'ru';
+    if (from === to) return;
+    if (dictCount >= DICT_MAX_WORDS) return;
+    var words = String(text || '').match(/[A-Za-z\u00c0-\u024f][A-Za-z\u00c0-\u024f'-]{1,}/g);
+    if (!words) return;
+    var batch = [];
+    for (var i = 0; i < words.length; i++) {
+      var w = dictKey(words[i]).replace(/'s$/, '');
+      if (w.length < 2 || w.length > 24) continue;
+      gdict.vocab[w] = 1;
+      if (DICT_STOP[w] || gdict.rev[w] || dictAsked[w]) continue;
+      dictAsked[w] = 1;
+      dictCount++;
+      batch.push(w);
+      if (batch.length >= DICT_BATCH) { dictAskWords(batch, from, to); batch = []; }
+      if (dictCount >= DICT_MAX_WORDS) break;
+    }
+    if (batch.length) dictAskWords(batch, from, to);
+  }
+
+  function dictAskWords(list, from, to) {
+    if (!list || !list.length) return;
+    dictPush(function () {
+      return dictReq(list, from, to).then(function (out) {
+        if (!gdict) return;
+        for (var i = 0; i < list.length; i++) {
+          gdict.rev[list[i]] = 1;
+          var v = dictSense(out[i] || '');
+          if (v) dictAdd(v, list[i], 1.2, 'text');
+        }
+      });
+    });
+  }
+
+  /* ---------------- обратный проход ---------------- */
+
+  function dictLookup(word) {
+    if (!gdict) return null;
+    var w = dictKey(word);
+    if (!w) return null;
+    var list = gdict.words[w];
+    if (list && list.length) return list;
+    var alt = gdict.stem[dictStem(w)];
+    if (!alt || !alt.length) return null;
+    var best = null, bestC = -1;
+    for (var i = 0; i < alt.length; i++) {
+      var cand = gdict.words[alt[i]];
+      if (cand && cand.length && cand[0].c > bestC) { best = cand; bestC = cand[0].c; }
+    }
+    return best;
+  }
+
+  function dictGrammar(word) {
+    if (cfg.target === 'ru' || cfg.target === 'uk') return DICT_GRAMMAR_RU[word] || '';
+    return '';
+  }
+
+  function tqHasUserScript(s) {
+    var tg = cfg.target || 'ru';
+    if (tg === 'ru' || tg === 'uk') return hasCyr(s);
+    if (tg === 'ja') return hasKana(s) || hasHan(s);
+    if (tg === 'zh-CN') return hasHan(s);
+    if (tg === 'ko') return hasHangul(s);
+    if (tg === 'ar') return hasArabic(s);
+    if (tg === 'he') return hasHebrew(s);
+    if (tg === 'el') return hasGreek(s);
+    if (tg === 'hi') return hasDevanagari(s);
+    /* Латиница: набранное латиницей — это команда языка перевода только
+       тогда, когда игра говорит на другом языке. Иначе это команда самой
+       игры, и трогать её нельзя. */
+    return isLatinTarget() && !!gameLang && gameLang !== tg && hasLatin(s);
+  }
+
+  function tqReverseCommand(text) {
+    var toks = String(text || '').trim().split(/\s+/);
+    var words = [], hit = 0, miss = 0;
+    for (var i = 0; i < toks.length; i++) {
+      var raw = toks[i];
+      var w = dictKey(raw);
+      if (!w) { words.push({ src: raw, out: raw, miss: true }); miss++; continue; }
+      if (/^[0-9]+$/.test(w)) { words.push({ src: raw, out: raw, miss: false }); hit++; continue; }
+      var list = dictLookup(w);
+      if (list && list.length) {
+        var alts = [];
+        for (var k = 0; k < list.length; k++) if (alts.indexOf(list[k].g) < 0) alts.push(list[k].g);
+        words.push({ src: raw, out: alts[0], miss: false, alts: alts });
+        hit++;
+        continue;
+      }
+      var gw = dictGrammar(w);
+      if (gw) { words.push({ src: raw, out: gw, miss: false }); hit++; continue; }
+      if (/^[A-Za-z]/.test(w)) { words.push({ src: raw, out: raw, miss: false }); hit++; continue; }
+      words.push({ src: raw, out: raw, miss: true });
+      miss++;
+    }
+    var out = [];
+    for (var j = 0; j < words.length; j++) out.push(words[j].out);
+    return { src: String(text || '').trim(), words: words, text: out.join(' '), hit: hit, miss: miss };
+  }
+
+  /* Хоть одно слово словарь действительно заменил. Нужно для латинских
+     пар: там набранное совпадает по письменности с командой игры. */
+  function tqPrevChanged(res) {
+    if (!res || !res.words) return false;
+    for (var i = 0; i < res.words.length; i++) {
+      var w = res.words[i];
+      if (w && w.src && w.out && dictKey(w.src) !== dictKey(w.out)) return true;
+    }
+    return false;
+  }
+
+  function tqLearn(src, finalText) {
+    if (!gdict) return;
+    var a = String(src || '').trim().split(/\s+/);
+    var b = String(finalText || '').trim().split(/\s+/);
+    if (!a.length || a.length !== b.length) return;
+    for (var i = 0; i < a.length; i++) {
+      var u = dictKey(a[i]), g = dictKey(b[i]);
+      if (!u || !g || u === g) continue;
+      /* Пара «латиница → латиница» — обычный случай, учим; иначе такие
+         пары не запоминались бы вовсе. */
+      if (/^[A-Za-z]/.test(u) && /^[A-Za-z]/.test(g) && !(isLatinTarget() && latinPairTranslate())) continue;
+      dictAdd(u, g, 3, 'user');
+    }
+    dictSave();
+  }
+
+  /* ---------------------------------------------------------------
+     Предпросмотр команды: Enter показывает, что уйдёт в игру.
+     Слово меняется тапом по фишке, строку можно править руками.
+     --------------------------------------------------------------- */
+
+  var cmdPrev = null;
+  var cmdPrevHint = null;
+  var cmdPrevInput = null;
+  var cmdPrevChips = null;
+  var cmdPrevAlts = null;
+  var tqPrev = null;
+
+  function buildCmdPrev() {
+    if (cmdPrev || !cmdbar) return cmdPrev;
+    var box = document.createElement('div');
+    box.id = 'tq-cmdprev';
+    box.hidden = true;
+
+    var hint = document.createElement('div');
+    hint.className = 'tq-prev-hint';
+    hint.textContent = t('cmdPrevHint');
+
+    var inp = document.createElement('input');
+    inp.type = 'text';
+    inp.autocomplete = 'off';
+    inp.autocapitalize = 'off';
+    inp.spellcheck = false;
+
+    var chips = document.createElement('div');
+    chips.className = 'tq-prev-chips';
+
+    var alts = document.createElement('div');
+    alts.className = 'tq-prev-alts';
+    alts.hidden = true;
+
+    box.appendChild(hint);
+    box.appendChild(inp);
+    box.appendChild(chips);
+    box.appendChild(alts);
+    cmdbar.appendChild(box);
+
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.keyCode === 13) { e.preventDefault(); tqPrevSend(); }
+      else if (e.key === 'Escape') { e.preventDefault(); tqPrevHide(); if (cmdbarInput) cmdbarInput.focus(); }
+    });
+    inp.addEventListener('input', function () { tqPrevRender(); });
+
+    chips.addEventListener('click', function (e) {
+      var b = e.target && e.target.closest ? e.target.closest('.tq-chip') : null;
+      if (!b) return;
+      tqPrevAlts(parseInt(b.getAttribute('data-i'), 10));
+    });
+
+    alts.addEventListener('click', function (e) {
+      var b = e.target && e.target.closest ? e.target.closest('.tq-alt') : null;
+      if (!b) return;
+      tqPrevPick(parseInt(b.getAttribute('data-i'), 10), b.getAttribute('data-w'));
+    });
+
+    cmdPrev = box;
+    cmdPrevHint = hint;
+    cmdPrevInput = inp;
+    cmdPrevChips = chips;
+    cmdPrevAlts = alts;
+    return box;
+  }
+
+  function tqPrevValue() {
+    return String((cmdPrevInput && cmdPrevInput.value) || '').replace(/[\r\n]+/g, ' ').trim();
+  }
+
+  function tqPrevRender() {
+    if (!cmdPrevChips) return;
+    var parts = tqPrevValue().split(/\s+/);
+    cmdPrevChips.textContent = '';
+    for (var i = 0; i < parts.length; i++) {
+      if (!parts[i]) continue;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tq-chip' + (tqPrev && tqPrev.words[i] && tqPrev.words[i].miss ? ' tq-chip-miss' : '');
+      b.textContent = parts[i];
+      b.setAttribute('data-i', String(i));
+      if (tqPrev && tqPrev.words[i] && tqPrev.words[i].src) b.title = tqPrev.words[i].src;
+      cmdPrevChips.appendChild(b);
+    }
+  }
+
+  function tqPrevShow(res) {
+    buildCmdPrev();
+    if (!cmdPrev) return false;
+    tqPrev = res;
+    tqPrevHintUpdate(res);
+    cmdPrevInput.value = res.text;
+    cmdPrev.hidden = false;
+    cmdPrevAlts.hidden = true;
+    tqPrevRender();
+    placeCmdbar();
+    tqPrevPlace();
+    fitCmdPrev();
+    /* Фокус не отбираем: после Enter клавиатура остаётся скрытой, пока
+       игрок сам не ткнёт в строку, чтобы править её руками. */
+    return true;
+  }
+
+  /* Без перевода игрок должен это видеть, а не гадать, почему игра молчит. */
+  function tqPrevHintUpdate(res) {
+    if (!cmdPrevHint) return;
+    var miss = [], i;
+    for (i = 0; res.words && i < res.words.length; i++) {
+      var w = res.words[i];
+      if (w && w.miss && w.src && !/^[0-9]+$/.test(w.src)) miss.push(w.src);
+    }
+    if (!res.hit) {
+      cmdPrevHint.textContent = t('cmdPrevNone');
+      cmdPrevHint.className = 'tq-prev-hint tq-prev-warn';
+      return;
+    }
+    if (miss.length) {
+      cmdPrevHint.textContent = t('cmdPrevMiss', { words: miss.join(', ') });
+      cmdPrevHint.className = 'tq-prev-hint tq-prev-warn';
+      return;
+    }
+    cmdPrevHint.textContent = t('cmdPrevHint');
+    cmdPrevHint.className = 'tq-prev-hint';
+  }
+
+  /* Если над строкой ввода места нет, предпросмотр раскрывается вниз.
+     В альбомной ориентации внизу клавиатура, поэтому он остаётся сверху,
+     а высоту ему режет fitCmdPrev. */
+  function tqPrevPlace() {
+    if (!cmdPrev || cmdPrev.hidden) return;
+    if (isLandscape()) {
+      cmdPrev.classList.remove('tq-below');
+      return;
+    }
+    cmdPrev.classList.toggle('tq-below', cmdPrev.getBoundingClientRect().top < 6);
+  }
+
+  function tqPrevHide() {
+    tqPrev = null;
+    if (cmdPrev) cmdPrev.hidden = true;
+    if (cmdPrevAlts) { cmdPrevAlts.hidden = true; cmdPrevAlts.textContent = ''; }
+  }
+
+  function tqPrevAlts(i) {
+    if (!tqPrev || !cmdPrevAlts) return;
+    var w = tqPrev.words[i];
+    var alts = [];
+    var cur = tqPrevValue().split(/\s+/)[i] || '';
+    if (w && w.src) {
+      var list = dictLookup(w.src);
+      if (list) for (var k = 0; k < list.length; k++) alts.push(list[k].g);
+      var gw = dictGrammar(dictKey(w.src));
+      if (gw) alts.push(gw);
+    }
+    cmdPrevAlts.textContent = '';
+    var seen = Object.create(null);
+    for (var j = 0; j < alts.length; j++) {
+      var a = alts[j];
+      if (!a || a === cur || seen[a]) continue;
+      seen[a] = 1;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tq-alt';
+      b.textContent = a;
+      b.setAttribute('data-i', String(i));
+      b.setAttribute('data-w', a);
+      cmdPrevAlts.appendChild(b);
+    }
+    if (cmdPrevAlts.children.length) cmdPrevAlts.hidden = false;
+    else { cmdPrevAlts.hidden = true; toast(t('cmdPrevNoAlt')); }
+    tqPrevMore(i, w && w.src, cur, seen);
+  }
+
+  /* Кандидаты второго переводчика доезжают позже: экран сеть не ждёт.
+     Берём только слова, которые есть в тексте этой игры. */
+  function tqPrevMore(i, src, cur, seen) {
+    if (!src || !gdict) return;
+    var from = cfg.target || 'ru', to = gameLang || 'en';
+    if (from === to) return;
+    dictMyMemory(src, from, to).then(function (list) {
+      if (!list || !list.length || !gdict) return;
+      var add = [];
+      for (var k = 0; k < list.length; k++) {
+        var c = dictKey(list[k]);
+        if (!c || c === cur || seen[c] || !gdict.vocab[c]) continue;
+        seen[c] = 1;
+        dictAdd(src, c, 1.5, 'alt');
+        add.push(c);
+      }
+      if (!add.length) return;
+      dictSave();
+      if (!tqPrev || !cmdPrevAlts || !cmdPrev || cmdPrev.hidden) return;
+      for (var j = 0; j < add.length; j++) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'tq-alt';
+        b.textContent = add[j];
+        b.setAttribute('data-i', String(i));
+        b.setAttribute('data-w', add[j]);
+        cmdPrevAlts.appendChild(b);
+      }
+      cmdPrevAlts.hidden = false;
+    });
+  }
+
+  /* Слово незнакомо: спрашиваем словарь и подставляем ответ, если он есть
+     в тексте игры. Строку, которую игрок уже правил, не трогаем. */
+  function tqResolveMissing(res) {
+    if (!res || !res.words || !gdict) return;
+    var from = cfg.target || 'ru', to = gameLang || 'en';
+    if (from === to) return;
+    var asked = 0;
+    for (var i = 0; i < res.words.length && asked < 3; i++) {
+      var w = res.words[i];
+      if (!w.miss || !w.src) continue;
+      asked++;
+      tqResolveWord(res, i, w.src, dictKey(w.src));
+    }
+  }
+
+  function tqResolveWord(res, idx, src, word) {
+    var from = cfg.target || 'ru', to = gameLang || 'en';
+    dictMyMemory(src, from, to).then(function (list) {
+      if (!list || !list.length || !gdict || !tqPrev || tqPrev !== res) return;
+      for (var k = 0; k < list.length; k++) {
+        var c = dictKey(list[k]);
+        if (!c || c === word || !gdict.vocab[c]) continue;
+        dictAdd(src, c, 1.3, 'guess');
+        res.words[idx] = { src: src, out: c, miss: false };
+        tqPrevRefresh(res);
+        return;
+      }
+    });
+  }
+
+  function tqPrevRefresh(res) {
+    if (!res || !cmdPrevInput) return;
+    if (String(cmdPrevInput.value || '').trim() !== res.text) return;
+    var out = [];
+    for (var i = 0; i < res.words.length; i++) out.push(res.words[i].out);
+    res.text = out.join(' ');
+    cmdPrevInput.value = res.text;
+    tqPrevRender();
+  }
+
+  function tqPrevPick(i, word) {
+    if (!word || !cmdPrevInput) return;
+    var parts = tqPrevValue().split(/\s+/);
+    if (i < 0 || i >= parts.length) return;
+    parts[i] = word;
+    cmdPrevInput.value = parts.join(' ');
+    if (tqPrev && tqPrev.words[i]) {
+      var src = tqPrev.words[i].src;
+      tqPrev.words[i].out = word;
+      tqPrev.words[i].miss = false;
+      if (src) dictAdd(src, word, 3.5, 'pick');
+      dictSave();
+    }
+    cmdPrevAlts.hidden = true;
+    tqPrevRender();
+    try { cmdPrevInput.focus(); } catch (e) {}
+  }
+
+  function tqSubmitFinal(val) {
+    nativeSubmitText(val, function (ok) {
+      if (ok) {
+        if (cmdbarInput) cmdbarInput.value = '';
+        syncInputs();
+        tqLog('cmdbar sent ok, closing');
+        closeCmdbar();
+      } else {
+        tqLog('cmdbar send failed, text kept');
+        toast(t('cmdbarSendFail'));
+      }
+    });
+  }
+
+  function tqPrevSend() {
+    var val = tqPrevValue();
+    if (!val) return;
+    var src = tqPrev ? tqPrev.src : '';
+    tqPrevHide();
+    tqLearn(src, val);
+    tqSubmitFinal(val);
+  }
+
+  /* Письменность текста игры не совпадает с письменностью языка перевода. */
+  function tqLangMismatch() {
+    var dom = dominantScript(dictGameText());
+    return !!dom && dom !== langScript(cfg.target || 'ru');
+  }
+
+  var tqReprobeAt = 0;
+
+  /* Язык игры определён неверно: собираем пару «перевод → игра» заново,
+     а когда пара готова — повторяем запрос команды. */
+  function tqReprobeLang(cb) {
+    if (!dictGameOn || !gdict) return false;
+    if (Date.now() - tqReprobeAt < 15000) return false;
+    tqReprobeAt = Date.now();
+    tqLog('dict lang re-probe');
+    dictFlushPair();
+    gameLang = '';
+    langTries = 0;
+    dictProbeLang(function () {
+      dictBegin();
+      if (typeof cb === 'function') setTimeout(cb, 0);
+    });
+    return true;
+  }
+
+  /* true — команда показана на предпросмотр и наружу не ушла. */
+  function tqReverseGate(val, send) {
+    if (tqPrev && cmdPrev && !cmdPrev.hidden) {
+      if (tqPrev.src === val) { send(tqPrevValue()); return true; }
+      tqPrevHide();
+    }
+    if (!gdict || !gameLang) return false;
+    if ((cfg.target || 'ru') === gameLang) {
+      /* Пара «перевод → игра» выродилась, но команда набрана не в той
+         письменности, что текст игры: язык игры определён неверно.
+         Перепроверяем его и только потом решаем, показывать ли перевод. */
+      if (tqHasUserScript(val) && tqLangMismatch() &&
+          tqReprobeLang(function () { tqReverseGate(val, send); })) return true;
+      return false;
+    }
+    if (!tqHasUserScript(val)) return false;
+    var res = tqReverseCommand(val);
+    /* Латиница неотличима от команды самой игры, поэтому предпросмотр
+       показываем только когда словарь действительно заменил слово:
+       «north» → «norr» да, а «norr» уходит в игру сразу, без второго Enter. */
+    if (isLatinTarget() && !tqPrevChanged(res)) {
+      tqLog('cmd preview skip ' + res.text + ' (latin, no change)');
+      return false;
+    }
+    tqLog('cmd preview ' + res.text + ' hit=' + res.hit + ' miss=' + res.miss);
+    if (!tqPrevShow(res)) return false;
+    tqResolveMissing(res);
+    return true;
   }
 
   /* ---------------------------------------------------------------
@@ -3108,8 +4817,26 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
 
   /* Loading a second game in the same page keeps the old interpreter alive and
      doubles memory use. A clean page restart is the only safe way to switch. */
+  /* Постоянная метка «стартовый экран вместо игры». Ставится, когда игрок
+     сам ушёл из игры («Открыть другой файл»), и снимается только после того,
+     как новая игра действительно запустилась. Без неё APK после перезапуска
+     снова открывал прежнюю игру прямо со стартового экрана. */
+  var NOAUTO_KEY = 'tq.noAutoOpen';
+
+  function noAutoOpen() {
+    try { return localStorage.getItem(NOAUTO_KEY) === '1'; } catch (e) { return false; }
+  }
+
+  function setNoAutoOpen(on) {
+    try {
+      if (on) localStorage.setItem(NOAUTO_KEY, '1');
+      else localStorage.removeItem(NOAUTO_KEY);
+    } catch (e) {}
+  }
+
   function reloadToPicker() {
     try { sessionStorage.setItem('tq.pickOnStart', '1'); } catch (e) {}
+    setNoAutoOpen(true);
     try { location.replace(location.pathname + location.hash); }
     catch (e) { location.reload(); }
   }
@@ -3262,7 +4989,71 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
   window.__tqIme = function (px) {
     imeNative = Math.max(0, Math.round(Number(px) || 0));
     applyIme();
+    placeCmdbar();
   };
+
+  /* Высоту инсетов в CSS-пиксели не пересчитываем: на телефоне строка
+     уезжала вверх. Держим её у нижнего края visualViewport — он знает
+     и про клавиатуру, и про сдвиг страницы. */
+  /* Высота клавиатуры: инсеты Android приходят раньше и точнее, visualViewport
+     догоняет позже. Берём большее из двух — строка никогда не прячется
+     под клавиатурой. */
+  function imeCss() {
+    var dpr = window.devicePixelRatio || 1;
+    var native = imeNative > 0 ? imeNative / dpr : 0;
+    var seen = 0;
+    try {
+      var vv = window.visualViewport;
+      if (vv && vv.height) seen = window.innerHeight - vv.height;
+    } catch (e) {}
+    return Math.max(0, Math.round(Math.max(native, seen)));
+  }
+
+  var barTicker = null;
+
+  function placeCmdbar() {
+    if (!cmdbar || !cmdbarOpen) return;
+    var h = cmdbar.offsetHeight || 52;
+    var y = (window.pageYOffset || 0) + window.innerHeight - h - imeCss() - 8;
+    if (y < 2) y = 2;
+    y = Math.round(y);
+    if (cmdbar.__top !== y) {
+      cmdbar.__top = y;
+      cmdbar.style.top = y + 'px';
+      cmdbar.style.bottom = 'auto';
+    }
+    tqPrevPlace();
+    fitCmdPrev();
+  }
+
+  /* Высота предпросмотра — по свободному месту с той стороны строки, куда
+     он раскрыт. В альбомной ориентации над строкой остаётся мало места:
+     без этого ограничения предпросмотр уезжал под клавиатуру. */
+  function fitCmdPrev() {
+    if (!cmdPrev || cmdPrev.hidden || !cmdbar) return;
+    var base = Math.round(window.innerHeight * 0.46);
+    var bar = cmdbar.getBoundingClientRect();
+    var room;
+    if (cmdPrev.classList.contains('tq-below')) {
+      room = window.innerHeight - imeCss() - bar.bottom - 14;
+    } else {
+      room = bar.top - 14;
+    }
+    var h = Math.min(base, room);
+    if (h < 64) h = 64;
+    cmdPrev.style.maxHeight = Math.round(h) + 'px';
+  }
+
+  (function watchBarViewport() {
+    try {
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', placeCmdbar);
+        window.visualViewport.addEventListener('scroll', placeCmdbar);
+      }
+    } catch (e) {}
+    window.addEventListener('resize', placeCmdbar);
+    window.addEventListener('scroll', placeCmdbar, true);
+  })();
 
   function buildCmdbar() {
     if (cmdbar) return cmdbar;
@@ -3282,6 +5073,8 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     send.type = 'button';
     send.setAttribute('data-act', 'send');
     send.textContent = t('cmdbarSend');
+    /* Пока команда набирается, кнопки нет: её показывает Enter. */
+    send.hidden = true;
 
     var close = document.createElement('button');
     close.type = 'button';
@@ -3297,20 +5090,22 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     inp.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.keyCode === 13) {
         e.preventDefault();
-        submitCmdbar();
+        submitCmdbar(false);
       } else if (e.key === 'Escape') {
         e.preventDefault();
         closeCmdbar();
       }
     });
+    inp.addEventListener('input', function () { showCmdbarSend(false); });
     send.addEventListener('click', function () {
       tqLog('cmdbar send click');
-      submitCmdbar();
+      submitCmdbar(true);
     });
     close.addEventListener('click', function () { closeCmdbar(); });
 
     cmdbar = bar;
     cmdbarInput = inp;
+    buildCmdPrev();
     return bar;
   }
 
@@ -3324,8 +5119,12 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     tqLog('cmdbar open target=' + (target ? (target.id || target.tagName) : 'none') +
       ' field=' + (window.__tqKbTarget ? 'panel' : 'game'));
     cmdbar.classList.add('tq-open');
+    showCmdbarSend(false);
     cmdbarOpen = true;
     cmdbarOpenedAt = Date.now();
+    placeCmdbar();
+    if (barTicker) clearInterval(barTicker);
+    barTicker = setInterval(placeCmdbar, 250);
     try { if (target && target.blur) target.blur(); } catch (e) {}
     var b = $('tq-kb');
     if (b) b.classList.add('tq-on');
@@ -3442,6 +5241,9 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
 
   function closeCmdbar() {
     tqLog('cmdbar close');
+    showCmdbarSend(false);
+    if (barTicker) { clearInterval(barTicker); barTicker = null; }
+    tqPrevHide();
     cmdbarOpen = false;
     window.__tqKbTarget = null;
     if (cmdbar) cmdbar.classList.remove('tq-open');
@@ -3527,10 +5329,29 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
 
   window.__tqNativeSubmit = nativeSubmitText;
 
-  function submitCmdbar() {
+  function showCmdbarSend(on) {
+    var s = cmdbar && cmdbar.querySelector('[data-act="send"]');
+    if (s) s.hidden = !on;
+  }
+
+  /* Enter в клавиатуре: клавиатура прячется, а строка с предпросмотром
+     остаются — команду видно, отправить можно кнопкой. Клавиатуру вернёт
+     тап по строке, когда захочется править её руками. */
+  function hideCmdbarKeyboard() {
+    try {
+      if (window.AndroidBridge && window.AndroidBridge.hideKeyboard) window.AndroidBridge.hideKeyboard();
+    } catch (e) {}
+    try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {}
+  }
+
+  function submitCmdbar(fromSend) {
     if (!cmdbarInput) return;
     var val = String(cmdbarInput.value || '').replace(/[\r\n]+/g, ' ').trim();
     tqLog('cmdbar submit len=' + val.length);
+    if (!fromSend) {
+      showCmdbarSend(true);
+      hideCmdbarKeyboard();
+    }
     if (!val) {
       /* Пустая строка — это Enter: запрос «нажмите клавишу» ждёт его. */
       var want = window.__tqInputType ? window.__tqInputType() : null;
@@ -3556,19 +5377,12 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     }
 
     window.__tqKbTarget = null;
-    nativeSubmitText(val, function (ok) {
-      if (ok) {
-        if (cmdbarInput) cmdbarInput.value = '';
-        syncInputs();
-        tqLog('cmdbar sent ok, closing');
-        /* Закрываем строку и клавиатуру: иначе клавиатура закрывает кнопки
-           и ответ игры, и кажется, что игра «не реагирует». */
-        closeCmdbar();
-      } else {
-        tqLog('cmdbar send failed, text kept');
-        toast(t('cmdbarSendFail'));
-      }
-    });
+    /* Обратный перевод: команда на языке игрока сначала показывается
+       так, как она уйдёт в игру. Второй Enter — отправка. */
+    if (tqReverseGate(val, tqSubmitFinal)) return;
+    /* Закрываем строку и клавиатуру: иначе клавиатура закрывает кнопки
+       и ответ игры, и кажется, что игра «не реагирует». */
+    tqSubmitFinal(val);
   }
 
   /* Движок может переопределять __tqSubmitFromNative при старте игры, поэтому
@@ -4258,7 +6072,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     try { return decodeURIComponent(escape(s)); } catch (e) { return s; }
   }
 
-  /* meta.json: customName, originalFilename, title, lastUsed. */
+  /* meta.json: customName, originalFilename, title, lastUsed, lang. */
   var gameMetaCache = null;
 
   function readGameMeta() {
@@ -4268,7 +6082,8 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       customName: '',
       originalFilename: window.__tqGameName || '',
       title: blorbMetadataTitle(),
-      lastUsed: 0
+      lastUsed: 0,
+      lang: ''
     };
     var raw = auxRead('meta.json');
     if (raw) {
@@ -4279,6 +6094,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
           if (typeof p.originalFilename === 'string' && p.originalFilename) m.originalFilename = p.originalFilename;
           if (typeof p.title === 'string' && p.title) m.title = p.title;
           if (typeof p.lastUsed === 'number') m.lastUsed = p.lastUsed;
+          if (typeof p.lang === 'string') m.lang = p.lang;
         }
       } catch (e) {}
     }
@@ -4445,6 +6261,12 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     if (!nativeData()) return;
     touchGameMeta();
     loadGameTranslations();
+    /* Язык игры, выбранный руками в карточке: перебивает автоопределение. */
+    var meta = readGameMeta();
+    gameLangOverride = meta && meta.lang ? meta.lang : '';
+    gameLangManual = !!gameLangOverride;
+    gameLang = gameLangOverride;
+    if (gameLangOverride) tqLog('game lang ' + gameLangOverride + ' manual');
   }
 
   function listSaves() {
@@ -4721,8 +6543,12 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     glulx: [
       { id: 'quixe', file: 'engines/glulx.js', global: 'GlulxEngine',
         name: 'Glulx', version: '2.2.6' }
+    ],
+    zmachine: [
+      { id: 'zvm', file: 'engines/zmachine.js', global: 'ZMachineEngine',
+        name: 'ZVM', version: '1.1.6' }
     ]
-    /* zmachine и tads3 — позже; формат массива не меняется. */
+    /* tads3 — позже; формат массива не меняется. */
   };
 
   function formatName(fmt) {
@@ -4845,6 +6671,28 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
      Game loading / errors
      --------------------------------------------------------------- */
 
+  /* Что внутри Z-файла: версия Z-machine и признак «это вообще не игра».
+     В Blorb игра лежит в чанке ZCOD, иначе — с начала файла. */
+  function zmStoryInfo(u8) {
+    if (!u8 || u8.length < 64) return { error: 'tiny' };
+    var isForm = String.fromCharCode(u8[0], u8[1], u8[2], u8[3]) === 'FORM';
+    var isIfrs = u8.length > 11 && String.fromCharCode(u8[8], u8[9], u8[10], u8[11]) === 'IFRS';
+    if (isForm && isIfrs) {
+      var p = 12, chunk = null;
+      while (p + 8 <= u8.length) {
+        var id = String.fromCharCode(u8[p], u8[p + 1], u8[p + 2], u8[p + 3]);
+        var size = ((u8[p + 4] << 24) | (u8[p + 5] << 16) | (u8[p + 6] << 8) | u8[p + 7]) >>> 0;
+        if (id === 'ZCOD') { chunk = u8.subarray(p + 8, Math.min(u8.length, p + 8 + size)); break; }
+        p += 8 + size + (size & 1);
+      }
+      if (!chunk || chunk.length < 64) return { error: 'nozcode' };
+      return { version: chunk[0] };
+    }
+    var v = u8[0];
+    if (v < 1 || v > 8) return { error: 'nozcode' };
+    return { version: v };
+  }
+
   function hideLoading() {
     var lp = $('loadingpane');
     if (lp && lp.style.display !== 'none') lp.style.display = 'none';
@@ -4852,11 +6700,16 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     if (glo && glo.style.display !== 'none') glo.style.display = 'none';
   }
 
-  function showError(msg) {
+  function showError(msg, hint) {
     tqLog('ERROR ' + msg, true);
+    /* Индикатор загрузки гасим: иначе он висит поверх ошибки, а его полоса
+       (z-index выше панели ошибки) может съесть тап по кнопке под ней. */
+    hideLoading();
     var ep = $('errorpane');
     var ec = $('errorcontent');
+    var eh = $('errorhint');
     if (ec) ec.textContent = msg;
+    if (eh) { eh.textContent = hint || ''; eh.style.display = hint ? 'block' : 'none'; }
     if (ep) ep.style.display = 'block';
     document.body.classList.add('tq-error');
     gameStarted = false;
@@ -4870,6 +6723,59 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     if (ep) ep.style.display = 'none';
     var ec = $('errorcontent');
     if (ec) ec.textContent = '';
+    var eh = $('errorhint');
+    if (eh) { eh.textContent = ''; eh.style.display = 'none'; }
+  }
+
+  /* Ошибку движка показываем сами: GlkOte пишет её в панель, которая
+     остаётся скрытой, и страница висит на «Запускаю игру...». */
+  function engineErrorText(raw) {
+    var msg = String(raw || '');
+    var m = /Unsupported Z-Machine version:\s*(\d+)/i.exec(msg);
+    if (m) return { text: t('zVersionUnsupported', { v: m[1] }), hint: t('zVersionHint') };
+    if (/not a (Z-Code|Glulx) file|Blorb file contains no|not a Blorb file|Malformed Blorb|IFF file is not a Blorb/i.test(msg)) {
+      return { text: t('notGameFile'), hint: t('notGameFileHint') };
+    }
+    return { text: t('startFail', { e: msg }), hint: t('loadHint') };
+  }
+  window.__tqEngineError = function (raw) {
+    var r = engineErrorText(raw);
+    discardNewGameFolder();
+    showError(r.text, r.hint);
+  };
+
+  /* Отмена загрузки: движок мог уже занять страницу, поэтому просто
+     возвращаемся на стартовый экран, а поздний onReady игнорируем. */
+  var loadSeq = 0;
+
+  /* Папка, созданная этим запуском (её не было до него). Если запуск
+     отменили или он сорвался до первого onReady — папку убираем, чтобы
+     в «Данных игр» не оставался пустой мусор. */
+  function discardNewGameFolder() {
+    if (!window.__tqNewGameFolder) return;
+    window.__tqNewGameFolder = false;
+    var gid = window.__tqGameId || '';
+    if (!gid || !bridgeHas('deleteGame')) return;
+    try {
+      if (window.AndroidBridge.deleteGame(gid)) {
+        tqLog('folder removed ' + gid);
+        gameMetaCache = null;
+        if (hasNativeGames()) renderGamesData();
+      }
+    } catch (e) {}
+  }
+
+  function cancelLoad() {
+    loadSeq++;
+    tqLog('load cancel', true);
+    hideLoading();
+    hideError();
+    discardNewGameFolder();
+    gameStarted = false;
+    var start = $('tq-start');
+    if (start) start.style.display = 'flex';
+    var inp = $('tq-file');
+    if (inp) { try { inp.value = ''; } catch (e) {} }
   }
 
   function bridgeHas(fn) {
@@ -4902,6 +6808,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
 
   function maybeOpenLastGame() {
     if (!bridgeHas('getLastGame')) return;
+    var seq = loadSeq;
     var last = null;
     try { last = window.AndroidBridge.getLastGame(); } catch (e) { lastGameLoading(false); return; }
     if (!last) { lastGameLoading(false); return; }
@@ -4919,7 +6826,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       lastGameLoading(false);
     };
     var open = function (buf) {
-      if (done) return;
+      if (done || seq !== loadSeq) return;
       var len = buf && (buf.byteLength || buf.length) || 0;
       if (len < 12) { fail(); return; }
       done = true;
@@ -4953,6 +6860,8 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
   }
 
   function loadBytes(buf, filename) {
+    var seq = ++loadSeq;
+    window.__tqNewGameFolder = false;
     hideError();
     var start = $('tq-start');
     if (start) start.style.display = 'none';
@@ -4975,6 +6884,18 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     if (!fmt) { showError(t('unknownFormat', { list: supportedFormatsText() })); return; }
 
     tqLog('format ' + fmt + ' bytes=' + u8.length);
+
+    /* Битый файл и неподдерживаемая версия Z-machine: говорим сразу, до
+       движка, — иначе страница висит на «Запускаю игру...». */
+    if (fmt === 'zmachine') {
+      var zi = zmStoryInfo(u8);
+      if (zi.error) { showError(t('notGameFile'), t('notGameFileHint')); return; }
+      if (zi.version && [3, 4, 5, 8].indexOf(zi.version) < 0) {
+        showError(t('zVersionUnsupported', { v: zi.version }), t('zVersionHint'));
+        return;
+      }
+    }
+
     var list = ENGINES[fmt];
     if (!list || !list.length) { showError(t('formatUnsupported', { f: formatName(fmt) })); return; }
 
@@ -4995,15 +6916,28 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       window.__tqGameId = vmId || storyId || window.__tqGameId || '';
       if (filename) window.__tqGameName = filename;
 
+      /* Была ли у игры папка до этого запуска: решает, можно ли её сносить
+         при отмене загрузки. */
+      window.__tqNewGameFolder = false;
+      if (window.__tqGameId && bridgeHas('gameExists')) {
+        try {
+          window.__tqNewGameFolder = !window.AndroidBridge.gameExists(window.__tqGameId);
+        } catch (e) { window.__tqNewGameFolder = false; }
+      }
+
       engine.init({
         gameBytes: u8,
         gameId: window.__tqGameId,
         localize: {},
         onReady: function () {
+          if (seq !== loadSeq) { tqLog('load cancel: ready ignored'); return; }
+          window.__tqNewGameFolder = false;
           mergeLegacyGameData();
           installSaveHooks();
           initNativeGameData();
+          tqDictStart();
           syncGameQuickButtons();
+          setNoAutoOpen(false);
           saveLastGameBridge();
           setTimeout(function () {
             try {
@@ -5016,13 +6950,13 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
             scheduleSavePrompt();
           }, 0);
         },
-        onError: function (msg) { showError(t('startFail', { e: msg })); }
+        onError: function (msg) { discardNewGameFolder(); showError(t('startFail', { e: msg })); }
       });
     };
 
     var started = false;
     var run = function (engine) {
-      if (started) return;
+      if (started || seq !== loadSeq) return;
       started = true;
       boot(engine);
     };
@@ -5044,6 +6978,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
   function readFile(file) {
     if (!file) return;
     if (gameLoadAttempted) { reloadToPicker(); return; }
+    var seq = ++loadSeq;
     hideError();
     var startEl = $('tq-start');
     if (startEl) startEl.style.display = 'none';
@@ -5064,6 +6999,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     }
     var fr = new FileReader();
     fr.onload = function () {
+      if (seq !== loadSeq) return;
       var u8 = new Uint8Array(fr.result);
       if (u8.length > 12 &&
           String.fromCharCode(u8[0], u8[1], u8[2], u8[3]) === 'FORM' &&
@@ -5106,6 +7042,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
   }
 
   function bindUI() {
+    on($('tq-load-cancel'), 'click', cancelLoad);
     /* «Поблагодарить»: в APK ссылка уходит во внешний браузер (перехват
        в MainActivity), в браузере — открывается новой вкладкой. */
     var thx = $('tq-thanks');
@@ -5135,7 +7072,16 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       if (tqLogSave()) toast(t('diagSaved', { path: 'Downloads/questplayer-log.log' }));
       else toast(t('diagSaveFail'));
     });
-    on($('tq-error-open'), 'click', function () { chooseGame(true); });
+    /* Кнопка ошибки — <label for="tq-file">: системный выбор файла открывает
+       сама страница по нативному тапу. Программный input.click() в WebView
+       срабатывал не с каждого тапа, поэтому кнопку приходилось жать по многу
+       раз. Здесь только прячем ошибку и возвращаем стартовый экран. */
+    on($('tq-error-open'), 'click', function (ev) {
+      if (gameLoadAttempted) { ev.preventDefault(); reloadToPicker(); return; }
+      hideError();
+      var start = $('tq-start');
+      if (start) start.style.display = 'flex';
+    });
 
     on($('tq-full'), 'click', function () {
       if (!document.fullscreenElement) {
@@ -5287,6 +7233,11 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       try { this.value = ''; } catch (e) {}
     });
     on($('tq-games-list'), 'click', onGamesListClick);
+    on($('tq-games-list'), 'change', onGamesLangChange);
+    on($('tq-tabs'), 'click', function (ev) {
+      var b = ev.target.closest ? ev.target.closest('.tq-tab') : null;
+      if (b) setPanelTab(b.getAttribute('data-tab'));
+    });
     on($('tq-sync-out'), 'click', syncOut);
     on($('tq-sync-in'), 'click', syncIn);
 
@@ -5382,8 +7333,11 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
       window.visualViewport.addEventListener('resize', function () {
         var h = window.visualViewport.height;
         if (h > vvLast + 40) {
-          if (cmdbarOpen) closeCmdbar();
-          setTimeout(function () { restoreGameViewport('vv'); }, 80);
+          /* Клавиатура ушла (Enter, «назад»). Открытую строку ввода не
+             закрываем: после Enter клавиатура прячется, а строка с
+             предпросмотром должна остаться — её закрывают крестиком или
+             тапом по игре. */
+          if (!cmdbarOpen) setTimeout(function () { restoreGameViewport('vv'); }, 80);
         }
         vvLast = h;
       });
@@ -5507,6 +7461,7 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
     var bootLast = false;
     var bootPick = false;
     try { bootPick = sessionStorage.getItem('tq.pickOnStart') === '1'; } catch (e) {}
+    if (!bootPick) bootPick = noAutoOpen();
     try {
       if (bridgeHas('getLastGame')) {
         var lg = window.AndroidBridge.getLastGame();

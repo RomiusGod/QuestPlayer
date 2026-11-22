@@ -8,8 +8,13 @@
 QuestPlayer.html        ядро: UI, палитра, i18n, сейвы, мост, загрузчик, реестр движков
 engines/
   glulx.js              GlkOte + Quixe + Glk + Dialog + Blorb + GiDispa + GiLoad
+  zmachine.js           GlkOte + Glk + Dialog + Blorb + GiDispa + GiLoad + ZVM
   README.md             этот файл
 ```
+
+Glk-слой (GlkOte, Glk, Dialog, Blorb, GiDispa, GiLoad) лежит в обоих файлах:
+движок должен работать сам, без второго движка на странице — так и остаётся
+ленивость: открыли Glulx — загружен `glulx.js`, открыли Z-игру — `zmachine.js`.
 
 Один файл на движок. Не дробить `engines/glulx.js` на `glkote.js` + `quixe.js`:
 ленивость достигается на уровне движка, а не библиотек.
@@ -28,6 +33,10 @@ var ENGINES = {
   glulx: [
     { id: 'quixe', file: 'engines/glulx.js', global: 'GlulxEngine',
       name: 'Glulx', version: '2.2.6' }
+  ],
+  zmachine: [
+    { id: 'zvm', file: 'engines/zmachine.js', global: 'ZMachineEngine',
+      name: 'ZVM', version: '1.1.6' }
   ]
 };
 ```
@@ -48,9 +57,10 @@ var ENGINES = {
 
 ### Как добавить движок или формат
 
-1. Новый движок существующего формата (например Z-machine): положить
-   `engines/zmachine.js`, зарегистрировать `window.<global>` по контракту ниже,
-   дописать элемент в `ENGINES.zmachine`. Больше ничего.
+1. Ещё один движок существующего формата (второй вариант Glulx, новый
+   Z-интерпретатор): положить файл в `engines/`, зарегистрировать
+   `window.<global>` по контракту ниже, дописать элемент в массив нужного
+   формата в `ENGINES`. Больше ничего.
 2. Новый формат: строка в `FORMATS` (`name` + `ext`) и запись в `ENGINES`.
    Пока движка нет — файл всё равно распознаётся и получает понятное
    «формат пока не поддерживается», а не «не понял, что это».
@@ -58,7 +68,7 @@ var ENGINES = {
 ## Контракт модуля
 
 `engines/<id>.js` — IIFE, который по загрузке регистрирует `window.<global>`
-(для Glulx — `window.GlulxEngine`):
+(для Glulx — `window.GlulxEngine`, для Z-machine — `window.ZMachineEngine`):
 
 ```js
 window.GlulxEngine = {
@@ -80,6 +90,11 @@ window.GlulxEngine = {
 
 Модуль **не знает** про интерфейс плеера: палитру, i18n, кнопки, свои сейвы он
 не трогает. Разрешённый DOM — `#gameport`/`#windowport` (через GlkOte).
+
+Если GlkOte пишет фатальную ошибку (`glkote_error`), движок отдаёт текст
+ядру через необязательный хук `window.__tqEngineError(msg)` — ядро переводит
+его в понятное сообщение, показывает подсказку и убирает «Запускаю игру...».
+Без хука текст остаётся только в панели ошибок GlkOte.
 Строки интерфейса движка приходят в `opts.localize` (карта ключ → текст).
 
 На время работы модуль оставляет в `window` имена, которых ждёт сам GiLoad
@@ -99,34 +114,34 @@ window.GlulxEngine = {
 стартовал (`gameLoadAttempted`). Файл не того формата движка не грузит —
 выбор следующего файла идёт в той же странице, без перезагрузки.
 
-## Как добавить движок (пример: Z-machine)
+## Пример: как подключён Z-machine
 
-1. Положить `engines/zmachine.js`, который регистрирует `window.ZMachineEngine`
-   с тем же контрактом (`init`, `getSignature`).
-2. Добавить в `ENGINES` ядре:
+1. `engines/zmachine.js` регистрирует `window.ZMachineEngine` с тем же
+   контрактом (`init`, `getSignature`).
+2. В `ENGINES` ядра — запись:
 
 ```js
 zmachine: [
   { id: 'zvm', file: 'engines/zmachine.js', global: 'ZMachineEngine',
-    name: 'Z-machine', version: '1.0.0' }
+    name: 'ZVM', version: '1.1.6' }
 ]
 ```
 
-Больше ничего править не нужно: `detectFormat` уже возвращает `zmachine`
-для `.z5`/`.z8` и для Blorb с чанком `ZCOD`, `loadEngine` подхватит новый id.
+Больше ничего править не нужно: `detectFormat` возвращает `zmachine`
+для `.z1`–`.z8` и для Blorb с чанком `ZCOD`, `loadEngine` подхватывает id.
 
 ## Приёмка изменений
 
 - До запуска игры: `window.GlulxEngine === undefined`, `window.Quixe === undefined`.
 - `.gblorb` → грузится `engines/glulx.js`, игра стартует.
 - Повторный запуск в той же сессии не делает второй `fetch` движка.
-- `.z5` и `.txt` дают понятную ошибку, без краша.
+- `.z5` и `.zblorb` → грузится `engines/zmachine.js`, игра стартует и принимает команды.
+- `.txt` даёт понятную ошибку, без краша.
 - `window.__tqGameId` для той же игры совпадает с прежним (иначе поедут сейвы).
 - В `QuestPlayer.html` нет `QuixeClass`, `GlkOteClass`, `DialogClass`,
   `BlorbClass`, `GlkClass`, `GiDispaClass`, `GiLoadClass`.
-- `smoke.html` проходит (он же проверяет, что движок не загружен до старта).
 
 Проверка в браузере: `python -m http.server` в корне проекта, открыть
-`smoke.html`, нажать «Запустить тест», ждать PASS. Для реального WebView —
+`QuestPlayer.html`, выбрать игру и сыграть пару команд. Для реального WebView —
 `assets/engines/glulx.js` в APK отдаётся тем же `WebViewAssetLoader`, что и
 `assets/index.html` (адрес `https://appassets.local/engines/glulx.js`).

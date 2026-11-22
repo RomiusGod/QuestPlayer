@@ -258,7 +258,7 @@ console.log(msg);else if(window.opera&&opera.postError)
 opera.postError(msg);}
 function glkote_error(msg){if(!msg)
 msg='???';let el=document.getElementById(errorcontent_id);if(!el)return;remove_children(el);el.appendChild(document.createTextNode(msg));el=document.getElementById(errorpane_id);if(el.className=='WarningPane')
-el.className=null;el.style.display='';error_visible=true;hide_loading();}
+el.className=null;el.style.display='block';error_visible=true;hide_loading();if(window.__tqEngineError){try{window.__tqEngineError(msg);}catch(e){}}}
 function glkote_warning(msg){if(error_visible)
 return;if(!msg){$('#'+errorpane_id).hide();return;}
 const el=document.getElementById(errorcontent_id);if(!el)return;remove_children(el);el.appendChild(document.createTextNode(msg));$('#'+errorpane_id).addClass('WarningPane');$('#'+errorpane_id).show();hide_loading();}

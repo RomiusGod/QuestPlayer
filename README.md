@@ -16,6 +16,34 @@ I built this when I wanted to play a big Glulx game on my phone and no player wo
 |:--:|:--:|:--:|
 | <img src="screenshots/start.png" width="240" alt="Стартовый экран / Start screen"> | <img src="screenshots/settings.png" width="240" alt="Настройки / Settings"> | <img src="screenshots/keyboard.png" width="240" alt="Ввод команды / Command line"> |
 
+## Версии и релизы / Versions and releases
+
+Актуальная версия и APK — на странице релизов: **[последний релиз](https://github.com/RomiusGod/QuestPlayer/releases/latest)**. Там же каталог всех выпусков: у каждого свой APK и свои заметки о выпуске, старые версии не удаляются — [все релизы](https://github.com/RomiusGod/QuestPlayer/releases).
+
+The current version and its APK live on the releases page: **[latest release](https://github.com/RomiusGod/QuestPlayer/releases/latest)**. The same page is the catalogue of every release, each with its own APK and notes; older versions stay in place — [all releases](https://github.com/RomiusGod/QuestPlayer/releases).
+
+## Что нового в 1.1 / What's new in 1.1
+
+- **Z-machine** — `.z3`–`.z8` и `.zblorb` рядом с Glulx: тот же стек, на котором работают Parchment и Lectrote. Одна и та же игра в `.z3` и в `.zblorb` считается одной игрой — сохранения и настройки у них общие.
+- **Обратный перевод** — строку ввода можно набирать на языке перевода: перед отправкой видно, как команда уйдёт в игру, любое слово заменяется тапом или строка переписывается целиком. Если слова нет в словаре игры, строка об этом скажет.
+- **Язык игры вручную** — в карточке игры появился выбор языка с подписью «Язык»: 23 языка и «Авто». Пригодится, когда определитель ошибся; выбор применяется сразу, в том числе к открытой игре.
+- **Японский и китайский интерфейс** — в настройках теперь четыре языка: русский, английский, японский, китайский. Язык перевода — по-прежнему отдельная настройка, в ней 19 языков.
+- **Настройки по вкладкам** — «Опции» и «Данные игр»: карточки игр больше не мешают настройкам, а заголовок панели показывает, где вы находитесь.
+
+Плюс исправления по всему плееру — загрузка и её отмена, строка ввода с клавиатурой, сохранения, панель настроек.
+
+Ставится поверх 1.0.x: настройки, сохранения и данные игр остаются на месте. APK и полный список изменений — в заметках к выпуску.
+
+- **Z-machine** — `.z3`–`.z8` and `.zblorb` alongside Glulx: the same stack Parchment and Lectrote run on. The same game as `.z3` and as `.zblorb` counts as one game — saves and settings are shared.
+- **Reverse translation** — the input line accepts the translation language: before sending you see how the command will go to the game, any word is swapped with a tap or the whole line rewritten. If a word isn't in the game's dictionary, the line says so.
+- **Game language by hand** — each game card now has a language picker labelled "Lang": 23 languages plus "Auto". Useful when detection gets it wrong; the choice applies at once, including to the open game.
+- **Japanese and Chinese UI** — settings now offer four languages: Russian, English, Japanese, Chinese. The translation language is still a separate setting, with 19 languages.
+- **Settings in tabs** — "Options" and "Game data": game cards no longer get in the way of settings, and the panel title shows where you are.
+
+Plus fixes across the player — loading and cancelling it, the command line and keyboard, saves, the settings panel.
+
+It installs over 1.0.x: settings, saves and game data stay in place. The APK and the full changelog are in the release notes.
+
 ## Почему он вообще нужен / Why it's needed
 
 На телефоне интерактивные книги обычно упираются в память и в браузерные лимиты: localStorage кончается на ~5 МБ, вкладка падает, сейв не влезает. Здесь хранилище построено иначе — крупные данные уходят в IndexedDB, которая переживает перезагрузку и не задыхается на десятках мегабайт. Сейв большой Glulx-игры не проблема, даже если он весит около 20 МБ.
@@ -24,9 +52,9 @@ On a phone, interactive fiction usually hits memory and browser limits: localSto
 
 ## Что уже работает / What works
 
-Движок: реализован Glulx — файлы .gblorb, .blorb, .ulx. Движок вынесен в отдельный файл: монолита на HTML больше нет, так что добавлять новые движки будет проще. Загрузка простая: стартовый экран → «Выбрать файл игры» → игра пошла.
+Движки: Glulx (.gblorb, .blorb, .ulx) и Z-machine (.z3–.z8, .zblorb). Движок вынесен в отдельный файл: монолита на HTML больше нет, так что добавлять новые движки будет проще. Загрузка простая: стартовый экран → «Выбрать файл игры» → игра пошла.
 
-The engine: Glulx is implemented — .gblorb, .blorb, .ulx files. The engine lives in its own file: no more HTML monolith, so adding new engines will be easier. Loading is simple: start screen → "Choose game file" → you're in.
+Engines: Glulx (.gblorb, .blorb, .ulx) and Z-machine (.z3–.z8, .zblorb). The engine lives in its own file: no more HTML monolith, so adding new engines will be easier. Loading is simple: start screen → "Choose game file" → you're in.
 
 ## Перевод / Translation
 
@@ -34,9 +62,9 @@ The engine: Glulx is implemented — .gblorb, .blorb, .ulx files. The engine liv
 
 As I was building it, I realized translation could be wired in too — very handy, even if the quality isn't perfect. If someone can show a better implementation, you're welcome to.
 
-Описания переводятся на выбранный язык (по умолчанию — язык интерфейса; в настройках 19 языков). Кнопка перевода показывает целевой язык — RU, EN или другой — а когда перевод выключен, на ней написано OFF. Тап по абзацу показывает оригинал этого абзаца. Нужен интернет; без сети игра идёт, просто без перевода. Введённые тобой команды не переводятся — они уходят в игру как есть.
+Описания переводятся на выбранный язык (по умолчанию — язык интерфейса; в настройках 19 языков). Кнопка перевода показывает целевой язык — RU, EN или другой — а когда перевод выключен, на ней написано OFF. Тап по абзацу показывает оригинал этого абзаца. Нужен интернет; без сети игра идёт, просто без перевода. Команды можно набирать на своём языке: перед отправкой видно, как команда уйдёт в игру, — слово можно заменить тапом или строку переписать целиком. Если слова нет в словаре игры, строка ввода об этом скажет. Набранная на языке игры команда уходит сразу.
 
-Descriptions get translated into the language you choose (the UI language by default; 19 languages in settings). The translate button shows the target language — RU, EN or another — and reads OFF when translation is disabled. Tap a paragraph to see its original. Needs internet; offline the game still runs, just untranslated. Your input commands are never translated — they go to the game as-is.
+Descriptions get translated into the language you choose (the UI language by default; 19 languages in settings). The translate button shows the target language — RU, EN or another — and reads OFF when translation is disabled. Tap a paragraph to see its original. Needs internet; offline the game still runs, just untranslated. Commands can be typed in your own language: before sending you see how the command will go to the game, and any word can be swapped or the whole line rewritten. If a word is missing from the game dictionary, the input line says so. Typed in the game’s language, a command goes straight through.
 
 ## Управление / Controls
 
@@ -46,15 +74,15 @@ Arrows and Enter handle menus and paging. The ⌨ button opens the command line;
 
 ### Настройки (⋮) / Settings (⋮)
 
-Размер кнопок (крупные/компактные), переключатели стрелок, звука и графики, ориентация (авто / книжная / альбомная), язык интерфейса (русский/английский), светлая и тёмная тема. Сохранения: сейв при выходе автоматически скачивается в «Загрузки», Restore в игре сразу открывает выбор файла с телефона, есть экспорт всех и импорт одного. Плюс импорт/выгрузка данных игр и лог для диагностики.
+Панель разбита на две вкладки. «Опции» — размер кнопок (крупные/компактные), переключатели стрелок, звука и графики, ориентация (авто / книжная / альбомная), язык интерфейса (русский, английский, японский, китайский), светлая и тёмная тема. Сохранения: сейв при выходе автоматически скачивается в «Загрузки», Restore в игре сразу открывает выбор файла с телефона, есть экспорт всех и импорт одного. «Данные игр» — карточки сохранённых игр: размер, дата, выбор языка игры, переименование, удаление сохранений, выгрузка. Плюс импорт/выгрузка данных игр и лог для диагностики.
 
-Button size (large/compact), toggles for arrows, sound and graphics, orientation (auto / portrait / landscape), UI language (Russian/English), light and dark theme. Saves: the save on exit is auto-downloaded to Downloads, Restore in-game opens the phone's file picker right away, plus export-all and import-one. Also import/export of game data and a diagnostic log.
+The panel has two tabs. "Options" — button size (large/compact), toggles for arrows, sound and graphics, orientation (auto / portrait / landscape), UI language (Russian, English, Japanese, Chinese), light and dark theme. Saves: the save on exit is auto-downloaded to Downloads, Restore in-game opens the phone's file picker right away, plus export-all and import-one. "Game data" — cards for saved games: size, date, game language picker, rename, delete saves, export. Also import/export of game data and a diagnostic log.
 
 ## Другие движки / Other engines
 
-Сейчас поддержан Glulx. Движки для других форматов — в планах; по мере готовности они появятся в плеере.
+Сейчас поддержаны Glulx и Z-machine. Движки для других форматов — в планах; по мере готовности они появятся в плеере.
 
-Glulx is supported today. Engines for other formats are planned and will arrive as they're ready.
+Glulx and Z-machine are supported today. Engines for other formats are planned and will arrive as they're ready.
 
 ## Приватность / Privacy
 
@@ -64,9 +92,9 @@ Files never leave your phone. Only text for translation goes out — and only wh
 
 ## Кто делает / Who made it
 
-Собрал Romius. Сломалось — включи лог, экспортируй, пришли. Работает — просто читай.
+Собрал Romius. Сломалось — включи лог, экспортируй, пришли на **deyatel94@yandex.ru**. Работает — просто читай.
 
-Built by Romius. Broken — turn on the log, export it, send it. Works — just read.
+Built by Romius. Broken — turn on the log, export it and send it to **deyatel94@yandex.ru**. Works — just read.
 
 ## Как начать / Getting started
 
@@ -74,7 +102,7 @@ Built by Romius. Broken — turn on the log, export it, send it. Works — just 
 
 1. Положите рядом `QuestPlayer.html` и папку `engines` — без неё книга не запустится, движок подгружается отдельно.
 2. Откройте страницу через любой локальный сервер: `python -m http.server`, `npx serve` или «Live Server» в редакторе. Просто двойным щелчком по файлу (`file://`) браузер не даст странице загрузить движок.
-3. Выберите книгу: `.gblorb`, `.blorb`, `.ulx` или `.blb`.
+3. Выберите книгу: `.gblorb`, `.blorb`, `.ulx`, `.blb` или Z-machine — `.z3`–`.z8`, `.zblorb`.
 
 Дальше всё как в игре: печатаете или нажимаете кнопки, книга отвечает.
 
@@ -82,7 +110,7 @@ Built by Romius. Broken — turn on the log, export it, send it. Works — just 
 
 1. Put `QuestPlayer.html` and the `engines` folder side by side — without it the book won't start, the engine is loaded separately.
 2. Open the page through any local server: `python -m http.server`, `npx serve`, or Live Server in your editor. Opening the file directly (`file://`) won't let the page load the engine.
-3. Choose a book: `.gblorb`, `.blorb`, `.ulx` or `.blb`.
+3. Choose a book: `.gblorb`, `.blorb`, `.ulx`, `.blb` or Z-machine — `.z3`–`.z8`, `.zblorb`.
 
 From there it's just like playing: type or press the buttons, and the book answers.
 
@@ -98,9 +126,9 @@ From there it's just like playing: type or press the buttons, and the book answe
 
 **In-game** — arrows and `⏎` on the left, quick buttons on the right, `⋮` on top. The button panel can be dragged ("Drag buttons" in settings).
 
-**Настройки** (`⋮`) — язык интерфейса, размер, стрелки/звук/графика, быстрые кнопки, ориентация, перевод, сохранения, данные игр, файл игры, приложение, диагностика. Внизу — версия, сборка и копирайт.
+**Настройки** (`⋮`) — панель из двух вкладок: «Опции» (язык интерфейса, размер, стрелки/звук/графика, быстрые кнопки, ориентация, перевод, сохранения, файл игры, приложение, диагностика) и «Данные игр» (карточки игр). Внизу — версия, сборка и копирайт.
 
-**Settings** (`⋮`) — UI language, size, arrows/sound/graphics, quick buttons, orientation, translation, saves, game data, game file, app, diagnostics. At the bottom — version, build and copyright.
+**Settings** (`⋮`) — a panel with two tabs: "Options" (UI language, size, arrows/sound/graphics, quick buttons, orientation, translation, saves, game file, app, diagnostics) and "Game data" (game cards). At the bottom — version, build and copyright.
 
 ---
 
@@ -110,8 +138,8 @@ From there it's just like playing: type or press the buttons, and the book answe
 | --- | --- |
 | `QuestPlayer.html` | Вся страница: разметка, стили, интерфейс, перевод, сейвы, мост / The whole page: markup, styles, UI, translation, saves, bridge |
 | `engines/glulx.js` | Движок Glulx (GlkOte + Quixe + Glk + Dialog + Blorb + GiLoad) / The Glulx engine (GlkOte + Quixe + Glk + Dialog + Blorb + GiLoad) |
+| `engines/zmachine.js` | Движок Z-machine (GlkOte + Glk + Dialog + Blorb + GiDispa + GiLoad + ZVM) / The Z-machine engine (GlkOte + Glk + Dialog + Blorb + GiDispa + GiLoad + ZVM) |
 | `engines/README.md` | Как устроен реестр движков и как добавить новый / How the engine registry works and how to add a new one |
-| `smoke.html` | Самопроверка: открыть по HTTP, выбрать небольшую книгу, ждать PASS / Self-check: open over HTTP, pick a small book, wait for PASS |
 | `android/` | Исходники обёртки: манифест, Java-мост, ресурсы / Wrapper sources: manifest, Java bridge, resources |
 | `LICENSE` | MIT |
 
@@ -145,6 +173,8 @@ Inside the last block there's a map too — by section names, not line numbers (
 | Клавиатура и кнопки / Keyboard and buttons | «Keyboard / on-screen key control» |
 | Сейвы / Saves | «File-based saves» |
 | Данные игр (APK) / Game data (APK) | «Native game data (APK only)» |
+| Вкладки настроек / Settings tabs | «Вкладки бокового меню» |
+| Язык игры вручную / Game language by hand | «Языки для ручного выбора языка игры» |
 | Движки / Engines | «Движки» → `var ENGINES = {` |
 | Загрузка игры и ошибки / Game loading and errors | «Game loading / errors» |
 | Привязка интерфейса / UI bindings | «UI bindings» |
@@ -342,9 +372,10 @@ Find the line `    applyPalette();` inside `function init()` and insert the bloc
       caret.textContent = '▾';
       caret.setAttribute('aria-label', t('themeColor'));
       caret.style.cssText = 'font:16px/1 system-ui;padding:6px;margin-left:6px';
+      /* Стрелка встаёт рядом с темой внутри центрирующей обёртки шапки. */
       var toggle = $('tq-theme-toggle');
       if (toggle && toggle.parentNode) toggle.parentNode.insertBefore(caret, toggle.nextSibling);
-      else sheet.querySelector('.tq-head').appendChild(caret);
+      else (sheet.querySelector('.tq-head-mid') || sheet.querySelector('.tq-head')).appendChild(caret);
 
       var group = document.createElement('div');
       group.className = 'tq-group';
@@ -363,28 +394,14 @@ Find the line `    applyPalette();` inside `function init()` and insert the bloc
             'style="padding:8px 12px;border-radius:8px;border:1px solid var(--tq-borderLight);' +
             'background:var(--tq-surface3);color:var(--tq-textStrong);font:14px system-ui,sans-serif"></button>' +
         '</div>';
-      sheet.insertBefore(group, sheet.querySelector('.tq-group'));
+      /* Группа живёт во вкладке «Опции»: вставлять её можно только среди
+         её же прямых детей, иначе insertBefore бросает NotFoundError. */
+      var pane = sheet.querySelector('.tq-tabpane[data-pane="opts"]') || sheet;
+      pane.insertBefore(group, pane.querySelector('.tq-group'));
 
-      /* Стрелка стоит у темы: отступ от неё — 1/5 зазора до крестика. */
-      function placeCaret() {
-        var tgl = $('tq-theme-toggle'), cls = $('tq-panel-close');
-        if (!tgl || !cls) return;
-        tgl.style.marginRight = '0';
-        caret.style.marginRight = 'auto';
-        caret.style.marginLeft = '0';
-        var space = cls.getBoundingClientRect().left - tgl.getBoundingClientRect().right -
-          caret.getBoundingClientRect().width;
-        if (space <= 0) return;
-        caret.style.marginLeft = Math.max(2, Math.round(space / 5)) + 'px';
-      }
-      placeCaret();
-      window.addEventListener('resize', placeCaret);
-      if (window.MutationObserver) {
-        new MutationObserver(placeCaret).observe(document.body, { attributes: true, attributeFilter: ['class'] });
-      }
-
+      /* Шапка — сетка «заголовок / середина / крестик»: стрелка и тема живут
+         в центрирующей обёртке, поэтому от их соседей ничего не разъезжается. */
       caret.addEventListener('click', function () {
-        placeCaret();
         group.hidden = !group.hidden;
         caret.textContent = group.hidden ? '▾' : '▴';
       });
@@ -494,7 +511,11 @@ Find the line `    applyPalette();` inside `function init()` and insert the bloc
 
 Рядом со значком темы (луна/солнце) появляется стрелка `▾`: по ней открывается «Цвет интерфейса» — круговой выбор оттенка, квадрат насыщенности и яркости, поле HEX и «Сбросить». Из одного цвета собирается вся тёмная палитра интерфейса: фон и панели тонируются оттенком, акцент — сам цвет, текст остаётся светлым. Светлая и тёмная темы книги (`cfg.theme`) при этом не меняются. Выбор запоминается в `localStorage` (`tq.uiColor`).
 
+Панель настроек теперь разбита на вкладки, поэтому блок сам находит «Опции» (`.tq-tabpane[data-pane="opts"]`) и вставляет группу «Цвет интерфейса» её первым ребёнком — вставлять её в `.tq-sheet` напрямую нельзя. Свои группы настроек добавляйте туда же, в этот же `data-pane="opts"`. Стрелка `▾` при этом встаёт в центр шапки рядом с темой, внутрь обёртки `.tq-head-mid`: шапка — сетка «заголовок / середина / крестик», и крестик от этого не переезжает.
+
 Next to the theme icon (moon/sun) a `▾` caret appears: it opens "Interface colour" — a hue wheel, a saturation/brightness square, a HEX field and "Reset". The whole dark UI palette is built from one colour: background and panels are tinted with the hue, the accent is the colour itself, text stays light. The book's light and dark themes (`cfg.theme`) are untouched. The choice is stored in `localStorage` (`tq.uiColor`).
+
+The settings panel is split into tabs now, so the block finds "Options" itself (`.tq-tabpane[data-pane="opts"]`) and inserts the "Interface colour" group as its first child — inserting it into `.tq-sheet` directly no longer works. Add your own settings groups there too, into the same `data-pane="opts"`. The `▾` caret sits in the header centre next to the theme, inside the `.tq-head-mid` wrapper: the header is a "title / middle / close" grid, so the close button doesn't move.
 
 ---
 
@@ -526,9 +547,9 @@ The rules are simple and predictable:
 
 ## Движки / Engines
 
-В `QuestPlayer.html` нет кода виртуальной машины. Формат определяется по расширению и сигнатуре файла, а движок подгружается из `engines/` только когда он действительно нужен. Сейчас поддержан Glulx (`engines/glulx.js`).
+В `QuestPlayer.html` нет кода виртуальной машины. Формат определяется по расширению и сигнатуре файла, а движок подгружается из `engines/` только когда он действительно нужен. Сейчас поддержаны Glulx (`engines/glulx.js`) и Z-machine (`engines/zmachine.js`).
 
-There's no virtual-machine code in `QuestPlayer.html`. The format is detected by file extension and signature, and the engine is loaded from `engines/` only when it's actually needed. Glulx is supported today (`engines/glulx.js`).
+There's no virtual-machine code in `QuestPlayer.html`. The format is detected by file extension and signature, and the engine is loaded from `engines/` only when it's actually needed. Glulx (`engines/glulx.js`) and Z-machine (`engines/zmachine.js`) are supported today.
 
 Добавить движок — две строки в реестре: новый файл в `engines/` и запись в `ENGINES`. Подробности — в `engines/README.md`. Фильтр в выборе файла и текст ошибки «не понял, что это за файл» берутся из этого же реестра, так что разметку править не нужно.
 
@@ -538,9 +559,9 @@ Adding an engine is two lines in the registry: a new file in `engines/` and an e
 
 ## Сборка APK / Building the APK
 
-APK — это WebView, который открывает `assets/index.html` и отдаёт странице мост `AndroidBridge`. Минимум — Android 7.0 (API 24), пакет `com.romius.questplayer`, `versionName` — 1.0, `versionCode` растёт с каждой сборкой.
+APK — это WebView, который открывает `assets/index.html` и отдаёт странице мост `AndroidBridge`. Минимум — Android 7.0 (API 24), пакет `com.romius.questplayer`, `versionName` — 1.1.0, `versionCode` растёт с каждой сборкой.
 
-The APK is a WebView that opens `assets/index.html` and exposes the `AndroidBridge` to the page. Minimum — Android 7.0 (API 24), package `com.romius.questplayer`, `versionName` 1.0, `versionCode` grows with each build.
+The APK is a WebView that opens `assets/index.html` and exposes the `AndroidBridge` to the page. Minimum — Android 7.0 (API 24), package `com.romius.questplayer`, `versionName` 1.1.0, `versionCode` grows with each build.
 
 Мост (все методы — `@JavascriptInterface` в `MainActivity`):
 
@@ -556,9 +577,9 @@ The bridge (all methods are `@JavascriptInterface` in `MainActivity`):
 | Данные игр / Game data | `listGamesData`, `readAux`, `writeAux`, `deleteOther`, `mergeGameData`, `exportGameArchive`, `importGameArchive` |
 | Обмен между сборками / Sharing between builds | `syncFolder`, `chooseSyncFolder`, `syncToFolder`, `syncFromFolder` |
 
-Движок в APK лежит рядом со страницей (`assets/engines/glulx.js`) и отдаётся тем же `WebViewAssetLoader`, что и `assets/index.html`.
+Движки в APK лежат рядом со страницей (`assets/engines/`) и отдаются тем же `WebViewAssetLoader`, что и `assets/index.html`.
 
-In the APK the engine sits next to the page (`assets/engines/glulx.js`) and is served by the same `WebViewAssetLoader` as `assets/index.html`.
+In the APK the engines sit next to the page (`assets/engines/`) and are served by the same `WebViewAssetLoader` as `assets/index.html`.
 
 APK подписывается постоянным ключом: без него обновление поверх установленной версии невозможно. Ключ в репозиторий не входит.
 
